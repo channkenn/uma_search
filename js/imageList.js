@@ -142,7 +142,7 @@ export const imageList = [
   { fileName: "秋川やよい.png", altText: "(秋川やよい)" },
   { fileName: "都留岐涼花.png", altText: "(都留岐涼花)" },
   { fileName: "駿川たづな.png", altText: "(駿川たづな)" },
-  { fileName: "モブウマ娘.png", altText: "(モブウマ娘)" },
+  { fileName: "モブウマ娘.png", altText: "(モブ OR モブウマ娘)" },
   { fileName: "沖野トレーナー.png", altText: "(沖野トレーナー)" },
   { fileName: "黒沼トレーナー.png", altText: "(黒沼トレーナー)" },
   { fileName: "東条ハナトレーナー.png", altText: "(東条ハナトレーナー)" },

@@ -20,8 +20,8 @@ function createUnit() {
 
   const img = document.createElement("img");
   img.className = "selected-image";
-  img.src = `${imagePath}空白.png`; // 初期画像
-  img.alt = "空白";
+  img.src = `${imagePath}モブウマ娘.png`; // 初期画像
+  img.alt = "モブウマ娘";
   unit.appendChild(img);
 
   const btn = document.createElement("button");
