@@ -10,11 +10,21 @@
     <div id="container">
       <!-- 選択ユニットがここに追加されます -->
     </div>
-    <button id="add-unit-btn" class="btn">ユニットを追加</button>
+    <button id="add-unit-btn" class="btn">ウマ娘を追加</button>
 
     <!-- Google検索 -->
     <div id="search-container">
       <input type="text" id="searchInput" placeholder="検索ワードを入力!" />
+      <div class="search_day">
+        <p>日付検索</p>
+        <div class="search_afday">
+          <label for="afday"><strong>以降</strong></label>
+          <input type="date" id="afday">
+        </div>
+        <div class="search_bfday">
+          <label for="bfday"><strong>以前</strong></label>
+          <input type="date" id="bfday">
+        </div>
       <button id="searchBtn">Google検索</button>
     </div>
 

@@ -21,20 +21,17 @@ function createUnit() {
   const img = document.createElement("img");
   img.className = "selected-image";
   img.src = `${imagePath}モブウマ娘.png`; // 初期画像
-  img.alt = "モブウマ娘";
+  img.alt = ""; // 初期alt
+  img.addEventListener("click", () => openModal(img)); // 画像クリックでモーダルを開く
   unit.appendChild(img);
 
-  const btn = document.createElement("button");
-  btn.textContent = "画像選択";
-  btn.className = "btn";
-  btn.addEventListener("click", () => openModal(img));
-  unit.appendChild(btn);
-
-  container.appendChild(unit);
+  container.appendChild(unit); // ボタンを削除したため直接ユニットを追加
 }
 
 let selectedImages = []; // 選択された画像のaltを格納する配列
 let characterQuery = ""; // グローバルに宣言したcharacterQuery
+let bfdayQuery = ""; // グローバルに宣言したdateQuery
+let afdayQuery = ""; // グローバルに宣言したdateQuery
 // モーダルを開いて画像を選択
 function openModal(targetImg) {
   imageGrid.innerHTML = ""; // モーダル内容をリセット
@@ -43,24 +40,37 @@ function openModal(targetImg) {
     const img = document.createElement("img");
     img.src = `${imagePath}${fileName}`;
     img.alt = altText; // alt テキストを設定
+
+    // すでに選択されている場合は半透明にしてクリックできないようにする
+    if (selectedImages.includes(altText)) {
+      img.style.opacity = "0.5"; // 半透明
+      img.style.pointerEvents = "none"; // クリック無効
+    }
+
     img.addEventListener("click", () => {
-      // 画像を選択リストに追加
+      // 選択解除の場合、選択済みリストから削除
+      const currentAlt = targetImg.alt;
+      if (currentAlt !== "モブウマ娘" && selectedImages.includes(currentAlt)) {
+        selectedImages = selectedImages.filter((alt) => alt !== currentAlt);
+      }
+
+      // 新しい画像を選択
+      targetImg.src = img.src;
+      targetImg.alt = img.alt;
+
+      // 選択済みリストに追加
       if (!selectedImages.includes(img.alt)) {
         selectedImages.push(img.alt);
       }
 
-      // 画像が2つ以上選ばれた場合にcharacterQueryを更新
-      if (selectedImages.length >= 2) {
-        characterQuery = selectedImages.join(" "); // altを半角スペース区切りで結合
-      } else {
-        characterQuery = selectedImages; // altを設定
-      }
+      // `characterQuery` を更新
+      characterQuery = selectedImages.join(" "); // 選択済みのaltを半角スペース区切りで結合
+
       console.log("characterQuery:", characterQuery); // デバッグ用にconsoleで確認
 
-      targetImg.src = img.src;
-      targetImg.alt = img.alt;
       closeModal.click();
     });
+
     imageGrid.appendChild(img);
   });
 
@@ -80,10 +90,9 @@ function performGoogleSearch() {
 
   // 画像の alt 情報を取得
   const selectedImg = document.querySelector(".selected-image");
-  //const characterQuery = selectedImg ? selectedImg.alt : ""; // 画像が選ばれている場合のみ alt を取得
 
   // 3つの検索ワードを組み合わせる
-  const query = `${baseQuery} ${userQuery} ${characterQuery}`;
+  const query = `${baseQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
 
   // Google 検索 URL を作成
   const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(
@@ -122,6 +131,24 @@ document.addEventListener("DOMContentLoaded", () => {
     window.open(googleUrl, "_blank");
   }
 });
+// カレンダーの日付が変更された際にクエリを更新
+document.getElementById("bfday").addEventListener("change", updateQuery);
+document.getElementById("afday").addEventListener("change", updateQuery);
 
+function updateQuery() {
+  const bfday = document.getElementById("bfday").value;
+  const afday = document.getElementById("afday").value;
+
+  // 検索クエリを構築
+  if (afday) {
+    afdayQuery = ` after:${afday}`;
+  }
+  if (bfday) {
+    bfdayQuery = ` before:${bfday}`;
+  }
+
+  console.log(afdayQuery); // 結果を表示（必要に応じて他の処理に使用）
+  console.log(bfdayQuery); // 結果を表示（必要に応じて他の処理に使用）
+}
 // 初期ユニットを1つ作成
 createUnit();
