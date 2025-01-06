@@ -120,16 +120,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
 
   searchBtn.addEventListener("click", performGoogleSearch);
-
-  function performGoogleSearch() {
-    const baseQuery = `site:bbs.animanch.com/ "カテゴリ『ウマ娘・競馬』"`;
-    const userQuery = searchInput.value.trim();
-    const query = `${baseQuery} ${userQuery}`;
-    const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(
-      query
-    )}`;
-    window.open(googleUrl, "_blank");
-  }
 });
 // カレンダーの日付が変更された際にクエリを更新
 document.getElementById("bfday").addEventListener("change", updateQuery);
