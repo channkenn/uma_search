@@ -18,6 +18,7 @@ function createUnit() {
   unit.className = "unit";
   unit.id = `unit-${unitCount}`;
 
+  // 画像の作成
   const img = document.createElement("img");
   img.className = "selected-image";
   img.src = `${imagePath}モブウマ娘.png`; // 初期画像
@@ -25,7 +26,32 @@ function createUnit() {
   img.addEventListener("click", () => openModal(img)); // 画像クリックでモーダルを開く
   unit.appendChild(img);
 
+  // 削除ボタンの作成
+  const deleteButton = document.createElement("button");
+  deleteButton.className = "delete-button";
+  deleteButton.textContent = "削除";
+  deleteButton.addEventListener("click", () => deleteUnit(unit));
+  unit.appendChild(deleteButton);
+
   container.appendChild(unit); // ボタンを削除したため直接ユニットを追加
+}
+
+// ユニットを削除する関数
+function deleteUnit(unit) {
+  const img = unit.querySelector(".selected-image");
+  const altText = img.alt;
+
+  // 選択済みリストから削除
+  if (altText !== "モブウマ娘" && selectedImages.includes(altText)) {
+    selectedImages = selectedImages.filter((alt) => alt !== altText);
+  }
+
+  // containerからユニットを削除
+  container.removeChild(unit);
+
+  // クエリの更新
+  characterQuery = selectedImages.join(" "); // 選択済みのaltを半角スペース区切りで結合
+  updateQueryDisplay();
 }
 
 let selectedImages = []; // 選択された画像のaltを格納する配列
