@@ -67,7 +67,8 @@ function openModal(targetImg) {
       characterQuery = selectedImages.join(" "); // 選択済みのaltを半角スペース区切りで結合
 
       console.log("characterQuery:", characterQuery); // デバッグ用にconsoleで確認
-
+      // クエリの更新
+      updateQueryDisplay();
       closeModal.click();
     });
 
@@ -83,16 +84,18 @@ function updateSearchInput() {
     .join(" ");
   searchInput.value = selectedAlts;
 }
-
+// グローバル変数
+let query = "";
+let userQuery = "";
+const baseQuery = `site:bbs.animanch.com/ "カテゴリ『ウマ娘・競馬』"`;
+// 検索クエリを表示する要素
+const queryDisplay = document.getElementById("query-display");
 function performGoogleSearch() {
-  const baseQuery = `site:bbs.animanch.com/ "カテゴリ『ウマ娘・競馬』"`;
-  const userQuery = searchInput.value.trim();
-
   // 画像の alt 情報を取得
   const selectedImg = document.querySelector(".selected-image");
 
   // 3つの検索ワードを組み合わせる
-  const query = `${baseQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
+  query = `${baseQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
 
   // Google 検索 URL を作成
   const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(
@@ -103,7 +106,19 @@ function performGoogleSearch() {
   window.open(googleUrl, "_blank");
 }
 
-addUnitBtn.addEventListener("click", createUnit);
+// ボタンのクリック時にユニットを追加し、クエリを更新
+addUnitBtn.addEventListener("click", () => {
+  // ユニットを追加する処理
+  createUnit();
+
+  // クエリの更新
+  updateQueryDisplay();
+});
+// 入力フィールドの変更時にクエリを更新
+searchInput.addEventListener("input", () => {
+  userQuery = searchInput.value.trim();
+  updateQueryDisplay();
+});
 searchBtn.addEventListener("click", performGoogleSearch);
 
 closeModal.addEventListener("click", () => {
@@ -117,17 +132,16 @@ window.addEventListener("click", (event) => {
 });
 document.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.getElementById("searchBtn");
-  const searchInput = document.getElementById("searchInput");
-
   searchBtn.addEventListener("click", performGoogleSearch);
 });
 // カレンダーの日付が変更された際にクエリを更新
 document.getElementById("bfday").addEventListener("change", updateQuery);
 document.getElementById("afday").addEventListener("change", updateQuery);
-
+let bfday = "";
+let afday = "";
 function updateQuery() {
-  const bfday = document.getElementById("bfday").value;
-  const afday = document.getElementById("afday").value;
+  bfday = document.getElementById("bfday").value;
+  afday = document.getElementById("afday").value;
 
   // 検索クエリを構築
   if (afday) {
@@ -136,9 +150,16 @@ function updateQuery() {
   if (bfday) {
     bfdayQuery = ` before:${bfday}`;
   }
-
+  updateQueryDisplay();
   console.log(afdayQuery); // 結果を表示（必要に応じて他の処理に使用）
   console.log(bfdayQuery); // 結果を表示（必要に応じて他の処理に使用）
 }
+function updateQueryDisplay() {
+  // 3つの検索ワードを組み合わせる
+  query = `${baseQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
+  // HTML 上に表示
+  queryDisplay.textContent = query;
+}
 // 初期ユニットを1つ作成
 createUnit();
+updateQueryDisplay(); //query表示を更新
