@@ -32,8 +32,46 @@ function createUnit() {
   deleteButton.textContent = "削除";
   deleteButton.addEventListener("click", () => deleteUnit(unit));
   unit.appendChild(deleteButton);
-
+  // お気に入りボタンの作成
+  const favoriteButton = document.createElement("button");
+  favoriteButton.className = "delete-button";
+  favoriteButton.textContent = "お気に入り追加";
+  favoriteButton.addEventListener("click", () =>
+    addToFavorites(img.src, img.alt)
+  );
+  unit.appendChild(favoriteButton);
   container.appendChild(unit); // ボタンを削除したため直接ユニットを追加
+}
+// お気に入りを追加する関数
+// お気に入りを追加する関数
+function addToFavorites(fileName, altText) {
+  // 現在のページのベースURLを取得
+  const baseUrl = window.location.origin; // http://localhost:8000 や https://yourdomain.com
+
+  // "img/" プレフィックスを取り除く
+  const cleanFileName = fileName.replace(baseUrl + "/img/", "");
+
+  // 既存のデータを取得
+  let favorites = JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
+
+  // 重複を防ぐ
+  if (
+    !favorites.some(
+      (fav) => fav.fileName === cleanFileName && fav.altText === altText
+    )
+  ) {
+    // 画像ファイル名とaltTextをセットで保存
+    favorites.push({ fileName: cleanFileName, altText });
+    localStorage.setItem("favoriteCharacter", JSON.stringify(favorites));
+    console.log("お気に入りに追加しました:", {
+      fileName: cleanFileName,
+      altText,
+    });
+  }
+}
+
+function getFavorites() {
+  return JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
 }
 
 // ユニットを削除する関数
@@ -58,42 +96,38 @@ let selectedImages = []; // 選択された画像のaltを格納する配列
 let characterQuery = ""; // グローバルに宣言したcharacterQuery
 let bfdayQuery = ""; // グローバルに宣言したdateQuery
 let afdayQuery = ""; // グローバルに宣言したdateQuery
-// モーダルを開いて画像を選択
+let isFavoritesMode = false; // 初期はすべての画像を表示
+
 function openModal(targetImg) {
   imageGrid.innerHTML = ""; // モーダル内容をリセット
 
-  imageList.forEach(({ fileName, altText }) => {
+  // 表示するリストを切り替え
+  const displayList = isFavoritesMode ? getFavorites() : imageList;
+
+  displayList.forEach(({ fileName, altText }) => {
     const img = document.createElement("img");
     img.src = `${imagePath}${fileName}`;
-    img.alt = altText; // alt テキストを設定
+    img.alt = altText;
 
-    // すでに選択されている場合は半透明にしてクリックできないようにする
     if (selectedImages.includes(altText)) {
-      img.style.opacity = "0.5"; // 半透明
-      img.style.pointerEvents = "none"; // クリック無効
+      img.style.opacity = "0.5";
+      img.style.pointerEvents = "none";
     }
 
     img.addEventListener("click", () => {
-      // 選択解除の場合、選択済みリストから削除
       const currentAlt = targetImg.alt;
       if (currentAlt !== "モブウマ娘" && selectedImages.includes(currentAlt)) {
         selectedImages = selectedImages.filter((alt) => alt !== currentAlt);
       }
 
-      // 新しい画像を選択
       targetImg.src = img.src;
       targetImg.alt = img.alt;
 
-      // 選択済みリストに追加
       if (!selectedImages.includes(img.alt)) {
         selectedImages.push(img.alt);
       }
 
-      // `characterQuery` を更新
-      characterQuery = selectedImages.join(" "); // 選択済みのaltを半角スペース区切りで結合
-
-      console.log("characterQuery:", characterQuery); // デバッグ用にconsoleで確認
-      // クエリの更新
+      characterQuery = selectedImages.join(" ");
       updateQueryDisplay();
       closeModal.click();
     });
@@ -102,6 +136,31 @@ function openModal(targetImg) {
   });
 
   modal.style.display = "block";
+}
+
+// モード切り替えボタンのクリックイベント
+// モード切り替えボタンのクリックイベント
+function toggleMode() {
+  isFavoritesMode = !isFavoritesMode; // モードを切り替える
+  const modeText = isFavoritesMode ? "お気に入り" : "すべての画像";
+  document.getElementById(
+    "toggleButton"
+  ).textContent = `モード切り替え: ${modeText}`;
+
+  // 現在のモードに基づいてモーダルを再描画
+  //  openModal(document.querySelector(".selected-image")); // 任意のtargetImgを再描画
+}
+
+// 初期設定でモード切り替えボタンを作成
+function createToggleButton() {
+  const toggleButton = document.createElement("button");
+  toggleButton.id = "toggleButton";
+  toggleButton.textContent = "モード切り替え: すべての画像";
+  toggleButton.addEventListener("click", toggleMode);
+
+  // buttonContainerに追加
+  const buttonContainer = document.getElementById("buttonContainer");
+  buttonContainer.appendChild(toggleButton); // ボタンを追加
 }
 
 function updateSearchInput() {
@@ -145,7 +204,6 @@ searchInput.addEventListener("input", () => {
   userQuery = searchInput.value.trim();
   updateQueryDisplay();
 });
-searchBtn.addEventListener("click", performGoogleSearch);
 
 closeModal.addEventListener("click", () => {
   modal.style.display = "none";
@@ -159,6 +217,7 @@ window.addEventListener("click", (event) => {
 document.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.getElementById("searchBtn");
   searchBtn.addEventListener("click", performGoogleSearch);
+  createToggleButton(); // ボタン作成関数を呼び出し
 });
 // カレンダーの日付が変更された際にクエリを更新
 document.getElementById("bfday").addEventListener("change", updateQuery);
@@ -187,5 +246,5 @@ function updateQueryDisplay() {
   queryDisplay.textContent = query;
 }
 // 初期ユニットを1つ作成
-createUnit();
+//createUnit();
 updateQueryDisplay(); //query表示を更新
