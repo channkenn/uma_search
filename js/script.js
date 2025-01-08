@@ -122,7 +122,75 @@ function openModal(targetImg) {
 
   modal.style.display = "block";
 }
+// モーダル要素
+const historyModal = document.getElementById("history-modal");
+const closehistoryModal = document.getElementById("close-modal");
+const historyList = document.getElementById("history-list");
+const historyButton = document.getElementById("history-button");
 
+// 履歴モーダルを開く
+historyButton.addEventListener("click", () => {
+  // 履歴を取得
+  const searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
+
+  // 履歴をリストに追加
+  historyList.innerHTML = ""; // 既存のリストをクリア
+  if (searchHistory.length === 0) {
+    const noHistoryItem = document.createElement("li");
+    noHistoryItem.textContent = "検索履歴はありません。";
+    historyList.appendChild(noHistoryItem);
+  } else {
+    searchHistory.forEach((entry, index) => {
+      const listItem = document.createElement("li");
+      listItem.className = "history-item";
+
+      // リストアイテムの内容（削除ボタン、日時、URLの順）
+      const shortQuery =
+        entry.query.length > 50
+          ? `${entry.query.slice(0, 47)}...`
+          : entry.query;
+
+      listItem.innerHTML = `
+        <span>${entry.date}</span>
+        <a href="${entry.url}" target="_blank" class="query-link">${shortQuery}</a>
+        <button class="delete-btn" data-index="${index}">削除</button>
+      `;
+      historyList.appendChild(listItem);
+    });
+
+    // 削除ボタンにイベントリスナーを追加
+    document.querySelectorAll(".delete-btn").forEach((button) => {
+      button.addEventListener("click", (e) => {
+        const index = e.target.dataset.index; // 削除対象のインデックスを取得
+        searchHistory.splice(index, 1); // 配列から該当項目を削除
+        localStorage.setItem("searchHistory", JSON.stringify(searchHistory)); // 更新された履歴を保存
+        e.target.parentElement.remove(); // リストから該当項目を削除
+
+        // リストが空の場合、"検索履歴はありません"を表示
+        if (searchHistory.length === 0) {
+          const noHistoryItem = document.createElement("li");
+          noHistoryItem.textContent = "検索履歴はありません。";
+          historyList.appendChild(noHistoryItem);
+        }
+      });
+    });
+  }
+
+  // モーダルを表示
+  historyModal.style.display = "block";
+});
+
+// モーダルを閉じる
+closehistoryModal.addEventListener("click", () => {
+  historyModal.style.display = "none";
+});
+
+// モーダル外をクリックしたときに閉じる
+window.addEventListener("click", (event) => {
+  if (event.target === historyModal) {
+    historyModal.style.display = "none";
+  }
+});
 // お気に入り追加
 function addToFavorites(fileName, altText) {
   let favorites = JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
@@ -180,18 +248,30 @@ let userQuery = "";
 const baseQuery = `site:bbs.animanch.com/ "カテゴリ『ウマ娘・競馬』"`;
 // 検索クエリを表示する要素
 const queryDisplay = document.getElementById("query-display");
+// 実際にGoogle検索をする箇所
 function performGoogleSearch() {
   // 画像の alt 情報を取得
   const selectedImg = document.querySelector(".selected-image");
 
   // 3つの検索ワードを組み合わせる
   query = `${baseQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
+  const historyQuery = `${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
 
   // Google 検索 URL を作成
   const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(
     query
   )}`;
+  // 現在の日時を取得
+  const currentDate = new Date().toLocaleString();
 
+  // 履歴を保存
+  const searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
+  searchHistory.push({
+    date: currentDate,
+    query: historyQuery,
+    url: googleUrl,
+  });
+  localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
   // 新しいタブで検索結果を開く
   window.open(googleUrl, "_blank");
 }

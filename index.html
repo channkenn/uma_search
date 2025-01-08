@@ -32,8 +32,9 @@
           <input type="date" id="bfday">
         </div>
       <button id="searchBtn">Google検索</button>
+      <!-- 履歴表示ボタン -->
+      <button id="history-button">検索履歴を見る</button>
     </div>
-
     <!-- モーダル -->
     <div id="imageModal" class="modal">
       <div class="modal-content">
@@ -42,6 +43,15 @@
       </div>
     </div>
 
+
+<!-- 履歴モーダル -->
+<div id="history-modal" class="history-modal">
+  <div class="history-modal-content">
+    <span class="close" id="close-modal">&times;</span>
+    <h2>検索履歴</h2>
+    <ul id="history-list" class="history-list"></ul>
+  </div>
+</div>
     <!-- 画像データの読み込み -->
     <script type="module" src="js/script.js"></script>
   </body>
