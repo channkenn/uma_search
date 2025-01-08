@@ -33,45 +33,14 @@ function createUnit() {
   deleteButton.addEventListener("click", () => deleteUnit(unit));
   unit.appendChild(deleteButton);
   // お気に入りボタンの作成
-  const favoriteButton = document.createElement("button");
+  /*   const favoriteButton = document.createElement("button");
   favoriteButton.className = "delete-button";
   favoriteButton.textContent = "お気に入り追加";
   favoriteButton.addEventListener("click", () =>
     addToFavorites(img.src, img.alt)
   );
-  unit.appendChild(favoriteButton);
+  unit.appendChild(favoriteButton); */
   container.appendChild(unit); // ボタンを削除したため直接ユニットを追加
-}
-// お気に入りを追加する関数
-// お気に入りを追加する関数
-function addToFavorites(fileName, altText) {
-  // 現在のページのベースURLを取得
-  const baseUrl = window.location.origin; // http://localhost:8000 や https://yourdomain.com
-
-  // "img/" プレフィックスを取り除く
-  const cleanFileName = fileName.replace(baseUrl + "/img/", "");
-
-  // 既存のデータを取得
-  let favorites = JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
-
-  // 重複を防ぐ
-  if (
-    !favorites.some(
-      (fav) => fav.fileName === cleanFileName && fav.altText === altText
-    )
-  ) {
-    // 画像ファイル名とaltTextをセットで保存
-    favorites.push({ fileName: cleanFileName, altText });
-    localStorage.setItem("favoriteCharacter", JSON.stringify(favorites));
-    console.log("お気に入りに追加しました:", {
-      fileName: cleanFileName,
-      altText,
-    });
-  }
-}
-
-function getFavorites() {
-  return JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
 }
 
 // ユニットを削除する関数
@@ -114,6 +83,19 @@ function openModal(targetImg) {
       img.style.pointerEvents = "none";
     }
 
+    // お気に入り追加・削除ボタン
+    const favoriteButton = document.createElement("button");
+    favoriteButton.textContent = isFavoritesMode ? "削除" : "お気に入り追加";
+    favoriteButton.addEventListener("click", () => {
+      if (isFavoritesMode) {
+        removeFromFavorites(fileName); // お気に入りから削除
+      } else {
+        addToFavorites(fileName, altText); // お気に入りに追加
+      }
+      openModal(targetImg); // モーダルを再描画
+    });
+
+    // 画像クリック時の処理
     img.addEventListener("click", () => {
       const currentAlt = targetImg.alt;
       if (currentAlt !== "モブウマ娘" && selectedImages.includes(currentAlt)) {
@@ -132,12 +114,35 @@ function openModal(targetImg) {
       closeModal.click();
     });
 
-    imageGrid.appendChild(img);
+    const imgContainer = document.createElement("div");
+    imgContainer.appendChild(img);
+    imgContainer.appendChild(favoriteButton);
+    imageGrid.appendChild(imgContainer);
   });
 
   modal.style.display = "block";
 }
 
+// お気に入り追加
+function addToFavorites(fileName, altText) {
+  let favorites = JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
+  if (!favorites.some((fav) => fav.fileName === fileName)) {
+    favorites.push({ fileName, altText });
+    localStorage.setItem("favoriteCharacter", JSON.stringify(favorites));
+  }
+}
+
+// お気に入り削除
+function removeFromFavorites(fileName) {
+  let favorites = JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
+  favorites = favorites.filter((fav) => fav.fileName !== fileName);
+  localStorage.setItem("favoriteCharacter", JSON.stringify(favorites));
+}
+
+// お気に入りリストを取得
+function getFavorites() {
+  return JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
+}
 // モード切り替えボタンのクリックイベント
 // モード切り替えボタンのクリックイベント
 function toggleMode() {
