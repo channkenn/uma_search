@@ -154,6 +154,7 @@ historyButton.addEventListener("click", () => {
         <span>${entry.date}</span>
         <a href="${entry.url}" target="_blank" class="query-link">${shortQuery}</a>
         <button class="delete-btn" data-index="${index}">削除</button>
+        <button class="set-btn" data-index="${index}">セット</button>
       `;
       historyList.appendChild(listItem);
     });
@@ -174,12 +175,41 @@ historyButton.addEventListener("click", () => {
         }
       });
     });
+    // セットボタンにイベントリスナーを追加
+    document.querySelectorAll(".set-btn").forEach((button) => {
+      button.addEventListener("click", (e) => {
+        const index = e.target.dataset.index; // セット対象のインデックスを取得
+        const selectedEntry = searchHistory[index]; // 選択した履歴項目を取得
+        // ユニットの初期化処理
+        resetUnits(); // ここでユニットの初期化を行う関数を呼び出す
+        historySet(selectedEntry); // historySet関数を実行
+        // 履歴モーダルを閉じる
+        historyModal.style.display = "none";
+      });
+    });
+    // 「すべて削除」ボタンのイベントリスナー
+    document.getElementById("clear-all-btn").addEventListener("click", () => {
+      localStorage.removeItem("searchHistory"); // 履歴を削除
+      historyList.innerHTML = ""; // リストをクリア
+      const noHistoryItem = document.createElement("li");
+      noHistoryItem.textContent = "検索履歴はありません。";
+      historyList.appendChild(noHistoryItem);
+    });
   }
 
   // モーダルを表示
   historyModal.style.display = "block";
 });
-
+// ユニットの初期化関数（例）
+function resetUnits() {
+  unitCount = 0;
+  // ここにユニットを初期化するロジックを記述
+  console.log("ユニットを初期化しました");
+  // 例えば、すべてのユニットを削除する、または新しいユニットを作成し直すなど
+  document.querySelectorAll(".unit").forEach((unit) => {
+    unit.remove(); // ユニットを削除する例
+  });
+}
 // モーダルを閉じる
 closehistoryModal.addEventListener("click", () => {
   historyModal.style.display = "none";
@@ -270,6 +300,10 @@ function performGoogleSearch() {
     date: currentDate,
     query: historyQuery,
     url: googleUrl,
+    userQuery: userQuery,
+    characterQuery: characterQuery,
+    afday: afdayQuery,
+    bfday: bfdayQuery,
   });
   localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
   // 新しいタブで検索結果を開く
@@ -330,6 +364,142 @@ function updateQueryDisplay() {
   // HTML 上に表示
   queryDisplay.textContent = query;
 }
+
+function createUnitsFromQuery(query) {
+  // クエリをスペース区切りで分割して配列にする
+  const keywords = query.match(/\([^)]*\)/g);
+  // キーワードごとに処理
+  keywords.forEach((keyword) => {
+    // imageList から一致する画像を検索
+    const image = imageList.find((img) => img.altText.includes(keyword));
+
+    if (image) {
+      // 一致する画像が見つかった場合、ユニットを作成
+      createUnitWithImage(`${imagePath}${image.fileName}`, image.altText);
+    } else {
+      console.warn(`No matching image found for keyword: ${keyword}`);
+    }
+  });
+  characterQuery = query;
+}
+
+function createUnitWithImage(imgSrc, altText) {
+  // コンテナ要素を取得
+  const container = document.getElementById("container");
+  if (!container) {
+    console.error("Container element not found.");
+    return;
+  }
+
+  // ユニットを作成
+  unitCount++;
+  const unit = document.createElement("div");
+  unit.className = "unit";
+  unit.id = `unit-${unitCount}`; // 一意のID（タイムスタンプ）
+
+  // 画像を作成して追加
+  const img = document.createElement("img");
+  img.className = "selected-image";
+  img.src = imgSrc; // imagePath を含む完全な相対パス
+  img.alt = altText;
+  if (!selectedImages.includes(img.alt)) {
+    selectedImages.push(img.alt);
+  }
+  img.addEventListener("click", () => openModal(img)); // 画像クリックでモーダルを開く
+
+  unit.appendChild(img);
+
+  // 削除ボタンを作成して追加
+  const deleteButton = document.createElement("button");
+  deleteButton.className = "delete-button";
+  deleteButton.textContent = "削除";
+  deleteButton.addEventListener("click", () => unit.remove());
+  unit.appendChild(deleteButton);
+
+  // ユニットをコンテナに追加
+  container.appendChild(unit);
+}
+
+// 指定した文字列を入力欄にセットする関数
+function setInputValue(value) {
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) {
+    searchInput.value = value;
+    userQuery = value;
+  } else {
+    console.error("検索欄が見つかりません");
+  }
+}
+
+// 特定の日付を指定の date input に設定する関数
+// 特定の日付を指定の date input に設定する関数
+function setDate(inputId, dateValue) {
+  const dateInput = document.getElementById(inputId);
+  if (dateInput) {
+    // コロンより後ろの部分を取得
+    const dateOnly = dateValue.split(":")[1]; // コロンで分割して後ろの部分を取り出す
+
+    // 日付の形式を確認して "YYYY-MM-DD" 形式に変換
+    const formattedDate = new Date(dateOnly).toISOString().split("T")[0]; // "YYYY-MM-DD" 形式に変換
+
+    // "YYYY-MM-DD" 形式で設定
+    dateInput.value = formattedDate;
+
+    // inputId に応じて対応する変数に値を設定
+    if (inputId === "afday") {
+      afdayQuery = `${dateValue}`;
+    } else if (inputId === "bfday") {
+      bfdayQuery = `${dateValue}`;
+    }
+
+    console.log(`afdayQuery: ${afdayQuery}, bfdayQuery: ${bfdayQuery}`);
+  } else {
+    console.error(`ID "${inputId}" の要素が見つかりません`);
+  }
+}
+
+// 使用例
+
+// historySet関数の例（カスタマイズ可能）
+// historySet関数の例（カスタマイズ可能）
+function historySet(entry) {
+  console.log("履歴をセット:", entry);
+
+  // entry が適切なデータであることを確認
+  if (!entry || typeof entry !== "object") {
+    console.error("無効な履歴データ:", entry);
+    return;
+  }
+
+  // 以降の日付（afday）と以前の日付（bfday）の設定
+  if (entry.afday) {
+    setDate("afday", entry.afday); // 以降の日付を設定
+  } else {
+    console.warn("afday が未設定:", entry.afday);
+  }
+
+  if (entry.bfday) {
+    setDate("bfday", entry.bfday); // 以前の日付を設定
+  } else {
+    console.warn("bfday が未設定:", entry.bfday);
+  }
+
+  // 使用例：ユーザーが入力したクエリを設定
+  if (entry.userQuery) {
+    setInputValue(entry.userQuery); // 入力値を設定
+  } else {
+    console.warn("userQuery が未設定:", entry.userQuery);
+  }
+
+  // クエリ（characterQuery）を基にユニットを作成
+  if (entry.characterQuery) {
+    createUnitsFromQuery(entry.characterQuery); // クエリからユニットを作成
+  } else {
+    console.warn("characterQuery が未設定:", entry.characterQuery);
+  }
+  updateQueryDisplay();
+}
+
 // 初期ユニットを1つ作成
 //createUnit();
 updateQueryDisplay(); //query表示を更新

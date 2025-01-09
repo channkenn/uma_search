@@ -139,3 +139,21 @@ body {
 .history-item a:hover {
   text-decoration: underline;
 }
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.clear-all-btn {
+  background-color: #f44336; /* ボタン色 */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.clear-all-btn:hover {
+  background-color: #d32f2f; /* ボタンホバー時 */
+}
