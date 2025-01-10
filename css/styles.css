@@ -2,7 +2,29 @@ body {
   font-family: Arial, sans-serif;
   margin: 20px;
 }
+/* ヘッダースタイル */
+header {
+  background-color: #104cd0;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  font-size: 1.5em;
+  display: flex;
+  justify-content: start; /* 左詰めに変更 */
+  align-items: center; /* 縦方向の中央揃え */
+  gap: 10px; /* 要素間の間隔を10pxに設定 */
+}
+/* 画像サイズを調整 */
+header img {
+  width: 50px; /* 幅を50pxに設定 */
+  height: 50px; /* 高さを50pxに設定 */
+  border: none; /* 枠線を消す */
+}
 
+header h1 {
+  margin: 0; /* h1のデフォルトマージンをリセット */
+  font-size: 1.5em; /* フォントサイズの調整 */
+}
 #container {
   display: flex;
   flex-wrap: wrap;
