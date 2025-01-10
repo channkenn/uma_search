@@ -339,8 +339,8 @@ document.addEventListener("DOMContentLoaded", () => {
   createToggleButton(); // ボタン作成関数を呼び出し
 });
 // カレンダーの日付が変更された際にクエリを更新
-document.getElementById("bfday").addEventListener("change", updateQuery);
-document.getElementById("afday").addEventListener("change", updateQuery);
+document.getElementById("bfday").addEventListener("input", updateQuery);
+document.getElementById("afday").addEventListener("input", updateQuery);
 let bfday = "";
 let afday = "";
 function updateQuery() {
@@ -350,9 +350,13 @@ function updateQuery() {
   // 検索クエリを構築
   if (afday) {
     afdayQuery = ` after:${afday}`;
+  } else {
+    afdayQuery = "";
   }
   if (bfday) {
     bfdayQuery = ` before:${bfday}`;
+  } else {
+    bfdayQuery = "";
   }
   updateQueryDisplay();
   console.log(afdayQuery); // 結果を表示（必要に応じて他の処理に使用）
