@@ -179,3 +179,31 @@ header h1 {
 .clear-all-btn:hover {
   background-color: #d32f2f; /* ボタンホバー時 */
 }
+/* パネルリンクスタイル */
+.panel-link {
+  display: block;
+  padding: 20px;
+  margin: 15px 0;
+  background-color: #ffffff; /* 背景色を白に */
+  color: #333;
+  text-decoration: none;
+  border: 1px solid #ddd; /* 薄いボーダーに */
+  border-radius: 12px; /* 丸みを増加 */
+  font-size: 16px;
+  text-align: center;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 初期状態で軽い影を追加 */
+
+  /* 折り返し設定 */
+  word-break: break-all;
+  overflow-wrap: break-word;
+  white-space: normal;
+  max-width: 100%;
+}
+
+/* ホバー時のスタイル */
+.panel-link:hover {
+  background-color: #f4f4f4; /* ホバー時の色を少し明るく */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); /* より強調した影 */
+  cursor: pointer;
+}

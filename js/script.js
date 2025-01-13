@@ -258,6 +258,7 @@ function toggleMode() {
 function createToggleButton() {
   const toggleButton = document.createElement("button");
   toggleButton.id = "toggleButton";
+  toggleButton.classList.add("panel-link");
   toggleButton.textContent = "モード切り替え: すべての画像";
   toggleButton.addEventListener("click", toggleMode);
 
