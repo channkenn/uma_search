@@ -151,10 +151,12 @@ historyButton.addEventListener("click", () => {
           : entry.query;
 
       listItem.innerHTML = `
+      <div class="panel-link">
         <span>${entry.date}</span>
         <a href="${entry.url}" target="_blank" class="query-link">${shortQuery}</a>
         <button class="delete-btn" data-index="${index}">削除</button>
         <button class="set-btn" data-index="${index}">セット</button>
+      </div>
       `;
       historyList.appendChild(listItem);
     });
