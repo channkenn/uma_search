@@ -1,7 +1,7 @@
 // 初期化時に画像リストをロード
 import { imagePath, imageList } from "./imageList.js";
 
-const container = document.getElementById("container");
+const container = document.getElementById("unit-container");
 const addUnitBtn = document.getElementById("add-unit-btn");
 const modal = document.getElementById("imageModal");
 const closeModal = document.getElementById("closeModal");

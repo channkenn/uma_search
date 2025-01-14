@@ -30,35 +30,40 @@
         あにまん掲示板&nbsp;ウマカテ検索
       </h1>
     </header>
-
+    <div id="unit-container"></div>
     <div id="container">
       <!-- 選択ユニットがここに追加されます -->
     </div>
-    <button id="add-unit-btn" class="panel-link">キャラ追加</button>
-    <div id="buttonContainer"></div>
-
-    <div>
-      
+    <div class="container-inline">
+      <button id="add-unit-btn" class="panel-link">キャラ追加</button>
+      <div id="buttonContainer"></div>
+    </div>
+    
+    <div class="panel-link">
       <strong>現在の検索クエリ:</strong>
       <p id="query-display"></p>
     </div>
     <!-- Google検索 -->
     <div id="search-container">
-      <input type="text" id="searchInput" placeholder="検索ワードを入力" />
       <div class="search_day">
-        <p>日付検索</p>
-        <div class="search_afday">
-          <label for="afday"><strong>以降</strong></label>
-          <input type="date" id="afday">
+        <div class="inputs-inline">
+          <div class="search_afday">
+            <input type="date" id="afday">
+            <label for="afday"><strong>から</strong></label>
+          </div>
+          <div class="search_bfday">
+            <input type="date" id="bfday">
+            <label for="bfday"><strong>まで</strong></label>
+          </div>
         </div>
-        <div class="search_bfday">
-          <label for="bfday"><strong>以前</strong></label>
-          <input type="date" id="bfday">
-        </div>
-      <button id="searchBtn" class="panel-link">Google検索</button>
-      <!-- 履歴表示ボタン -->
-      <button id="history-button" class="panel-link">検索履歴を見る</button>
-    </div>
+        <input type="text" id="searchInput" placeholder="検索ワードを入力" />
+      </div>
+      
+      <div class="buttons-inline">
+        <button id="searchBtn" class="panel-link">Google検索</button>
+        <button id="history-button" class="panel-link">検索履歴を見る</button>
+      </div>
+      
     <a href="https://linguistic-sherilyn-animanimage-50068fef.koyeb.app/" class="panel-link" target="_blank">あにまん掲示板お気に入り画像とスレッド</a>
     <!-- モーダル -->
     <div id="imageModal" class="modal">
