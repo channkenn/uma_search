@@ -105,7 +105,7 @@ export const imageList = [
   { fileName: "フリオーソ.png", altText: "(フリオーソ)" },
   { fileName: "ホッコータルマエ.png", altText: "(タルマエ OR ロコドル OR ホッコータルマエ)" },
   { fileName: "マーベラスサンデー.png", altText: "(マーベラス OR マーベラスサンデー)" },
-  { fileName: "マチカネタンホイザ.png", altText: "(マチタン OR マチカネタンホイザ)" },
+  { fileName: "マチカネタンホイザ.png", altText: "(タンホイザ OR おマチさん OR マチタン OR マチカネタンホイザ)" },
   { fileName: "マチカネフクキタル.png", altText: "(ﾌﾝｷﾞｬﾛ OR フクキタル OR マチカネフクキタル)" },
   { fileName: "マヤノトップガン.png", altText: "(マヤ OR マヤノ OR マヤノトップガン)" },
   { fileName: "マルゼンスキー.png", altText: "(マブ OR マルゼン OR マルゼンスキー)" },
