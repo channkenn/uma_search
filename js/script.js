@@ -589,6 +589,27 @@ function historySet(entry) {
   }
   updateQueryDisplay();
 }
+// 関数をグローバルスコープに登録
+window.updateIframe = function () {
+  if (!userQuery || userQuery.trim() === "") {
+    alert("検索ワードが設定されていません。");
+    return;
+  }
+
+  const url = `https://bbs.animanch.com/search/${encodeURIComponent(
+    userQuery
+  )}`;
+  const url2 = `https://bbs.animanch.com/search2/${encodeURIComponent(
+    userQuery
+  )}`;
+  const urlRes = `https://bbs.animanch.com/searchRes/${encodeURIComponent(
+    userQuery
+  )}`;
+
+  document.getElementById("searchIframe").src = url;
+  document.getElementById("searchIframe2").src = url2;
+  document.getElementById("searchIframeRes").src = urlRes;
+};
 
 // 初期ユニットを1つ作成
 //createUnit();

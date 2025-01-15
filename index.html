@@ -70,9 +70,18 @@
           <p id="query-display"></p>
         </div>
         <button id="searchBtn" class="panel-link">Google検索</button>
+        <button onclick="updateIframe()" class="panel-link">あにまん検索</button>
         <button id="history-button" class="panel-link">検索履歴</button>
       </div>
-      
+    <div>
+      <!-- 検索結果を表示するiframe -->
+      <p>現行スレ</p>
+      <iframe id="searchIframe" width="600" height="400"></iframe>
+      <p>過去スレ</p>
+      <iframe id="searchIframe2" width="600" height="400"></iframe>
+      <p>レス(β)</p>
+      <iframe id="searchIframeRes" width="600" height="400"></iframe>
+    </div>  
     <a href="https://linguistic-sherilyn-animanimage-50068fef.koyeb.app/" class="panel-link" target="_blank">あにまん掲示板お気に入り画像とスレッド</a>
     <!-- モーダル -->
     <div id="imageModal" class="modal">
