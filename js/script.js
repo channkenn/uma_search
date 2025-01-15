@@ -609,6 +609,10 @@ window.updateIframe = function () {
   document.getElementById("searchIframe").src = url;
   document.getElementById("searchIframe2").src = url2;
   document.getElementById("searchIframeRes").src = urlRes;
+  // <a>タグにもURLを設定
+  document.getElementById("link1").href = url;
+  document.getElementById("link2").href = url2;
+  document.getElementById("linkRes").href = urlRes;
 };
 
 // 初期ユニットを1つ作成
