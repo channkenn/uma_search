@@ -1,16 +1,57 @@
+// ===== インポート =====
 // 初期化時に画像リストをロード
 import { imagePath, imageList } from "./imageList.js";
-
+// ===== グローバル変数 =====
+// DOM要素
 const container = document.getElementById("unit-container");
 const addUnitBtn = document.getElementById("add-unit-btn");
 const modal = document.getElementById("imageModal");
 const closeModal = document.getElementById("closeModal");
 const imageGrid = document.getElementById("imageGrid");
 const searchInput = document.getElementById("searchInput");
-const searchBtn = document.getElementById("searchBtn");
-// `input` 要素を取得（HTML に id="searchInput" の要素が必要）
-const inputField = document.getElementById("searchInput");
+// モーダル要素
+const historyModal = document.getElementById("history-modal");
+const closehistoryModal = document.getElementById("close-modal");
+const historyList = document.getElementById("history-list");
+const historyButton = document.getElementById("history-button");
+// 検索クエリを表示する要素
+const queryDisplay = document.getElementById("query-display");
+// ベース検索クエリ
+const baseQuery = `site:bbs.animanch.com/ "カテゴリ『ウマ娘・競馬』"`;
+// 状態管理
+let afday = "";
+let afdayQuery = ""; // グローバルに宣言したdateQuery
+let bfday = "";
+let bfdayQuery = ""; // グローバルに宣言したdateQuery
+let characterQuery = ""; // グローバルに宣言したcharacterQuery
+let isFavoritesMode = false; // 初期はすべての画像を表示
+let query = "";
+let selectedImages = []; // 選択された画像のaltを格納する配列
 let unitCount = 0;
+let userQuery = "";
+
+// ===== ヘルパー関数 =====
+// お気に入り追加
+function addToFavorites(fileName, altText) {
+  let favorites = JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
+  if (!favorites.some((fav) => fav.fileName === fileName)) {
+    favorites.push({ fileName, altText });
+    localStorage.setItem("favoriteCharacter", JSON.stringify(favorites));
+  }
+}
+// お気に入り削除
+function removeFromFavorites(fileName) {
+  let favorites = JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
+  favorites = favorites.filter((fav) => fav.fileName !== fileName);
+  localStorage.setItem("favoriteCharacter", JSON.stringify(favorites));
+}
+// お気に入り判定
+function isFavorite(fileName) {
+  // お気に入りリストを取得
+  const favorites = JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
+  // fileNameがオブジェクトの中に存在するかをチェック
+  return favorites.some((fav) => fav.fileName === fileName);
+}
 
 function createUnit() {
   unitCount++;
@@ -32,17 +73,19 @@ function createUnit() {
   deleteButton.textContent = "削除";
   deleteButton.addEventListener("click", () => deleteUnit(unit));
   unit.appendChild(deleteButton);
-  // お気に入りボタンの作成
-  /*   const favoriteButton = document.createElement("button");
-  favoriteButton.className = "delete-button";
-  favoriteButton.textContent = "お気に入り追加";
-  favoriteButton.addEventListener("click", () =>
-    addToFavorites(img.src, img.alt)
-  );
-  unit.appendChild(favoriteButton); */
   container.appendChild(unit); // ボタンを削除したため直接ユニットを追加
 }
 
+// お気に入りリストを取得
+function getFavorites() {
+  return JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
+}
+function updateQueryDisplay() {
+  // 3つの検索ワードを組み合わせる
+  query = `${baseQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
+  // HTML 上に表示
+  queryDisplay.textContent = query;
+}
 // ユニットを削除する関数
 function deleteUnit(unit) {
   const img = unit.querySelector(".selected-image");
@@ -60,13 +103,17 @@ function deleteUnit(unit) {
   characterQuery = selectedImages.join(" "); // 選択済みのaltを半角スペース区切りで結合
   updateQueryDisplay();
 }
-
-let selectedImages = []; // 選択された画像のaltを格納する配列
-let characterQuery = ""; // グローバルに宣言したcharacterQuery
-let bfdayQuery = ""; // グローバルに宣言したdateQuery
-let afdayQuery = ""; // グローバルに宣言したdateQuery
-let isFavoritesMode = false; // 初期はすべての画像を表示
-
+// ユニットの初期化関数（例）
+function resetUnits() {
+  unitCount = 0;
+  // ここにユニットを初期化するロジックを記述
+  console.log("ユニットを初期化しました");
+  // 例えば、すべてのユニットを削除する、または新しいユニットを作成し直すなど
+  document.querySelectorAll(".unit").forEach((unit) => {
+    unit.remove(); // ユニットを削除する例
+  });
+}
+// ===== モーダル関連関数 =====
 function openModal(targetImg) {
   imageGrid.innerHTML = ""; // モーダル内容をリセット
 
@@ -94,6 +141,37 @@ function openModal(targetImg) {
       }
       openModal(targetImg); // モーダルを再描画
     });
+    // 星マーク（お気に入りアイコン）
+    const star = document.createElement("span");
+    console.log(fileName);
+    star.className = "star";
+    if (isFavorite(fileName)) {
+      // お気に入りかどうかをチェック
+      star.textContent = "★";
+      star.classList.add("favorite"); // 色変更用のクラス
+      console.log(star.textContent);
+    } else {
+      star.textContent = "☆";
+      console.log(star.textContent);
+    }
+
+    // 星マークのクリックイベント
+    star.addEventListener("click", (event) => {
+      event.stopPropagation(); // 他のクリックイベントを防止
+      if (star.textContent === "☆") {
+        addToFavorites(fileName, altText);
+        star.textContent = "★";
+        star.classList.add("favorite");
+      } else {
+        removeFromFavorites(fileName);
+        star.textContent = "☆";
+        star.classList.remove("favorite");
+      }
+      // isFavoritesModeがtrueの場合にモーダルを再描画
+      if (isFavoritesMode) {
+        updateImageGrid(); // モーダルを再描画
+      }
+    });
 
     // 画像クリック時の処理
     img.addEventListener("click", () => {
@@ -116,18 +194,96 @@ function openModal(targetImg) {
 
     const imgContainer = document.createElement("div");
     imgContainer.appendChild(img);
-    imgContainer.appendChild(favoriteButton);
+    //imgContainer.appendChild(favoriteButton);
+    imgContainer.appendChild(star); // 星マークを追加
     imageGrid.appendChild(imgContainer);
   });
 
   modal.style.display = "block";
 }
-// モーダル要素
-const historyModal = document.getElementById("history-modal");
-const closehistoryModal = document.getElementById("close-modal");
-const historyList = document.getElementById("history-list");
-const historyButton = document.getElementById("history-button");
+// 画像グリッドの更新関数
+function updateImageGrid() {
+  imageGrid.innerHTML = ""; // 現在のグリッドをクリア
 
+  // 表示するリストを切り替え
+  const displayList = isFavoritesMode ? getFavorites() : imageList;
+
+  displayList.forEach(({ fileName, altText }) => {
+    const img = document.createElement("img");
+    img.src = `${imagePath}${fileName}`;
+    img.alt = altText;
+
+    if (selectedImages.includes(altText)) {
+      img.style.opacity = "0.5";
+      img.style.pointerEvents = "none";
+    }
+
+    // 星マーク（お気に入りアイコン）
+    const star = document.createElement("span");
+    star.className = "star";
+    if (isFavorite(fileName)) {
+      star.textContent = "★";
+      star.classList.add("favorite"); // 色変更用のクラス
+    } else {
+      star.textContent = "☆";
+    }
+
+    // 星マークのクリックイベント
+    star.addEventListener("click", (event) => {
+      event.stopPropagation();
+      if (star.textContent === "☆") {
+        addToFavorites(fileName, altText);
+        star.textContent = "★";
+        star.classList.add("favorite");
+        console.log("Favorite added:", star.classList); // デバッグ用
+      } else {
+        removeFromFavorites(fileName);
+        star.textContent = "☆";
+        star.classList.remove("favorite");
+        console.log("Favorite removed:", star.classList); // デバッグ用
+      }
+
+      // 再描画せずにグリッド更新
+      updateImageGrid();
+    });
+
+    const imgContainer = document.createElement("div");
+    imgContainer.appendChild(img);
+    imgContainer.appendChild(star);
+    imageGrid.appendChild(imgContainer);
+  });
+}
+// モード切り替えボタンのクリックイベント
+// モード切り替えボタンのクリックイベント
+function toggleMode() {
+  isFavoritesMode = !isFavoritesMode; // モードを切り替える
+  const modeText = isFavoritesMode ? "お気に入り" : "すべての画像";
+  document.getElementById(
+    "toggleButton"
+  ).textContent = `モード切り替え: ${modeText}`;
+
+  // 現在のモードに基づいてモーダルを再描画
+  //  openModal(document.querySelector(".selected-image")); // 任意のtargetImgを再描画
+}
+function updateQuery() {
+  bfday = document.getElementById("bfday").value;
+  afday = document.getElementById("afday").value;
+
+  // 検索クエリを構築
+  if (afday) {
+    afdayQuery = ` after:${afday}`;
+  } else {
+    afdayQuery = "";
+  }
+  if (bfday) {
+    bfdayQuery = ` before:${bfday}`;
+  } else {
+    bfdayQuery = "";
+  }
+  updateQueryDisplay();
+  console.log(afdayQuery); // 結果を表示（必要に応じて他の処理に使用）
+  console.log(bfdayQuery); // 結果を表示（必要に応じて他の処理に使用）
+}
 // 履歴モーダルを開く
 historyButton.addEventListener("click", () => {
   // 履歴を取得
@@ -202,16 +358,7 @@ historyButton.addEventListener("click", () => {
   // モーダルを表示
   historyModal.style.display = "block";
 });
-// ユニットの初期化関数（例）
-function resetUnits() {
-  unitCount = 0;
-  // ここにユニットを初期化するロジックを記述
-  console.log("ユニットを初期化しました");
-  // 例えば、すべてのユニットを削除する、または新しいユニットを作成し直すなど
-  document.querySelectorAll(".unit").forEach((unit) => {
-    unit.remove(); // ユニットを削除する例
-  });
-}
+
 // モーダルを閉じる
 closehistoryModal.addEventListener("click", () => {
   historyModal.style.display = "none";
@@ -223,38 +370,6 @@ window.addEventListener("click", (event) => {
     historyModal.style.display = "none";
   }
 });
-// お気に入り追加
-function addToFavorites(fileName, altText) {
-  let favorites = JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
-  if (!favorites.some((fav) => fav.fileName === fileName)) {
-    favorites.push({ fileName, altText });
-    localStorage.setItem("favoriteCharacter", JSON.stringify(favorites));
-  }
-}
-
-// お気に入り削除
-function removeFromFavorites(fileName) {
-  let favorites = JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
-  favorites = favorites.filter((fav) => fav.fileName !== fileName);
-  localStorage.setItem("favoriteCharacter", JSON.stringify(favorites));
-}
-
-// お気に入りリストを取得
-function getFavorites() {
-  return JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
-}
-// モード切り替えボタンのクリックイベント
-// モード切り替えボタンのクリックイベント
-function toggleMode() {
-  isFavoritesMode = !isFavoritesMode; // モードを切り替える
-  const modeText = isFavoritesMode ? "お気に入り" : "すべての画像";
-  document.getElementById(
-    "toggleButton"
-  ).textContent = `モード切り替え: ${modeText}`;
-
-  // 現在のモードに基づいてモーダルを再描画
-  //  openModal(document.querySelector(".selected-image")); // 任意のtargetImgを再描画
-}
 
 // 初期設定でモード切り替えボタンを作成
 function createToggleButton() {
@@ -275,12 +390,7 @@ function updateSearchInput() {
     .join(" ");
   searchInput.value = selectedAlts;
 }
-// グローバル変数
-let query = "";
-let userQuery = "";
-const baseQuery = `site:bbs.animanch.com/ "カテゴリ『ウマ娘・競馬』"`;
-// 検索クエリを表示する要素
-const queryDisplay = document.getElementById("query-display");
+
 // 実際にGoogle検索をする箇所
 function performGoogleSearch() {
   // 画像の alt 情報を取得
@@ -344,33 +454,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // カレンダーの日付が変更された際にクエリを更新
 document.getElementById("bfday").addEventListener("input", updateQuery);
 document.getElementById("afday").addEventListener("input", updateQuery);
-let bfday = "";
-let afday = "";
-function updateQuery() {
-  bfday = document.getElementById("bfday").value;
-  afday = document.getElementById("afday").value;
-
-  // 検索クエリを構築
-  if (afday) {
-    afdayQuery = ` after:${afday}`;
-  } else {
-    afdayQuery = "";
-  }
-  if (bfday) {
-    bfdayQuery = ` before:${bfday}`;
-  } else {
-    bfdayQuery = "";
-  }
-  updateQueryDisplay();
-  console.log(afdayQuery); // 結果を表示（必要に応じて他の処理に使用）
-  console.log(bfdayQuery); // 結果を表示（必要に応じて他の処理に使用）
-}
-function updateQueryDisplay() {
-  // 3つの検索ワードを組み合わせる
-  query = `${baseQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
-  // HTML 上に表示
-  queryDisplay.textContent = query;
-}
 
 function createUnitsFromQuery(query) {
   // クエリをスペース区切りで分割して配列にする

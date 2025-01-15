@@ -274,3 +274,14 @@ input[type="date"] {
   background-color: #fff; /* フォーカス時の背景色 */
   outline: none; /* フォーカス時のアウトラインを削除 */
 }
+
+.star {
+  font-size: 32px;
+  color: gray; /* 初期は灰色 */
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.star.favorite {
+  color: gold; /* お気に入り時は金色 */
+}
