@@ -256,6 +256,7 @@ input[type="date"] {
   display: flex; /* ラベルと入力を横並びにする */
   align-items: center; /* ラベルと入力を中央揃え */
   gap: 10px; /* ラベルと入力の間隔 */
+  width: 50%;
 }
 
 #searchInput {
