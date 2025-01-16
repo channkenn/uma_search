@@ -18,6 +18,7 @@ const historyButton = document.getElementById("history-button");
 const queryDisplay = document.getElementById("query-display");
 // ベース検索クエリ
 const baseQuery = `site:bbs.animanch.com/ "カテゴリ『ウマ娘・競馬』"`;
+const honkeQuery = `site:animanch.com -site:bbs.animanch.com "ウマ娘"`;
 // 状態管理
 let afday = "";
 let afdayQuery = ""; // グローバルに宣言したdateQuery
@@ -25,6 +26,7 @@ let bfday = "";
 let bfdayQuery = ""; // グローバルに宣言したdateQuery
 let characterQuery = ""; // グローバルに宣言したcharacterQuery
 let isFavoritesMode = false; // 初期はすべての画像を表示
+let isHonkeMode = false; // 初期はあにまん掲示板を表示
 let query = "";
 let selectedImages = []; // 選択された画像のaltを格納する配列
 let unitCount = 0;
@@ -82,8 +84,11 @@ function getFavorites() {
 }
 function updateQueryDisplay() {
   // 3つの検索ワードを組み合わせる
-  query = `${baseQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
-  // HTML 上に表示
+  if (isHonkeMode) {
+    query = `${honkeQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
+  } else {
+    query = `${baseQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
+  } // HTML 上に表示
   queryDisplay.textContent = query;
 }
 // ユニットを削除する関数
@@ -265,6 +270,13 @@ function toggleMode() {
   // 現在のモードに基づいてモーダルを再描画
   //  openModal(document.querySelector(".selected-image")); // 任意のtargetImgを再描画
 }
+// モード切り替えボタンのクリックイベント
+function tohonkeMode() {
+  isHonkeMode = !isHonkeMode; // モードを切り替える
+  const modeText = isHonkeMode ? "あにまん本家" : "あにまん掲示板";
+  document.getElementById("tohonkeButton").textContent = `${modeText}`;
+  updateQueryDisplay();
+}
 function updateQuery() {
   bfday = document.getElementById("bfday").value;
   afday = document.getElementById("afday").value;
@@ -383,7 +395,18 @@ function createToggleButton() {
   const buttonContainer = document.getElementById("buttonContainer");
   buttonContainer.appendChild(toggleButton); // ボタンを追加
 }
+// 初期設定でモード切り替えボタンを作成
+function createTohonkeButton() {
+  const tohonkeButton = document.createElement("button");
+  tohonkeButton.id = "tohonkeButton";
+  tohonkeButton.classList.add("panel-link");
+  tohonkeButton.textContent = "あにまん掲示板";
+  tohonkeButton.addEventListener("click", tohonkeMode);
 
+  // buttonContainerに追加
+  const honkeContainer = document.getElementById("honkeContainer");
+  honkeContainer.appendChild(tohonkeButton); // ボタンを追加
+}
 function updateSearchInput() {
   const selectedAlts = Array.from(document.querySelectorAll(".selected-image"))
     .map((img) => img.alt)
@@ -397,7 +420,8 @@ function performGoogleSearch() {
   const selectedImg = document.querySelector(".selected-image");
 
   // 3つの検索ワードを組み合わせる
-  query = `${baseQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
+  updateQueryDisplay();
+  //query = `${baseQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
   const historyQuery = `${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
 
   // Google 検索 URL を作成
@@ -450,6 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.getElementById("searchBtn");
   searchBtn.addEventListener("click", performGoogleSearch);
   createToggleButton(); // ボタン作成関数を呼び出し
+  createTohonkeButton(); // ボタン作成関数を呼び出し
 });
 // カレンダーの日付が変更された際にクエリを更新
 document.getElementById("bfday").addEventListener("input", updateQuery);
