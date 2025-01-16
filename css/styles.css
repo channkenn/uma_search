@@ -285,3 +285,51 @@ input[type="date"] {
 .star.favorite {
   color: gold; /* お気に入り時は金色 */
 }
+/* iframe-containerを非表示に */
+.iframe-container {
+  display: none; /* 初期状態で非表示 */
+  margin-top: 20px; /* 見た目の調整用 */
+  justify-content: space-between; /* 横並び */
+  gap: 10px; /* 要素間の間隔 */
+}
+
+/* 各iframeとリンクを縦に並べる */
+.iframe-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1; /* 各要素を均等に分配 */
+}
+
+/* iframeのスタイル */
+iframe {
+  width: 100%; /* ラッパー内で全幅を使用 */
+  height: 700px; /* 高さは固定 */
+  border: 1px solid #ccc; /* 枠線を追加 */
+  min-width: 200px; /* 最低幅を200pxに設定 */
+}
+
+/* リンクのスタイル */
+a {
+  margin-bottom: 5px; /* iframeとの間隔 */
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* 幅が600px以下の時 */
+@media (max-width: 600px) {
+  .iframe-container {
+    flex-direction: column; /* 縦並びに変更 */
+    gap: 10px; /* 要素間の間隔を保持 */
+  }
+
+  iframe {
+    width: 100%; /* iframeの幅を画面に合わせる */
+    height: 800px; /* 高さは800固定 */
+  }
+}

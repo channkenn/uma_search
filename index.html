@@ -73,15 +73,20 @@
         <button onclick="updateIframe()" class="panel-link">あにまん検索</button>
         <button id="history-button" class="panel-link">検索履歴</button>
       </div>
-    <div>
-      <!-- 検索結果を表示するiframe -->
-      <a id="link1" href="#" target="_blank">現行スレ</a><br />
-      <iframe id="searchIframe" width="600" height="400"></iframe>
-      <a id="link2" href="#" target="_blank">過去スレ</a><br />
-      <iframe id="searchIframe2" width="600" height="400"></iframe>
-      <a id="linkRes" href="#" target="_blank">レス(β)</a><br />
-      <iframe id="searchIframeRes" width="600" height="400"></iframe>
-    </div>  
+      <div id="iframe-container" class="iframe-container">
+        <div class="iframe-wrapper">
+          <a id="link1" href="#" target="_blank">現行スレ</a>
+          <iframe id="searchIframe"></iframe>
+        </div>
+        <div class="iframe-wrapper">
+          <a id="link2" href="#" target="_blank">過去スレ</a>
+          <iframe id="searchIframe2"></iframe>
+        </div>
+        <div class="iframe-wrapper">
+          <a id="linkRes" href="#" target="_blank">レス(β)</a>
+          <iframe id="searchIframeRes"></iframe>
+        </div>
+      </div>
     <a href="https://linguistic-sherilyn-animanimage-50068fef.koyeb.app/" class="panel-link" target="_blank">あにまん掲示板お気に入り画像とスレッド</a>
     <!-- モーダル -->
     <div id="imageModal" class="modal">

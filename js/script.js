@@ -613,8 +613,15 @@ window.updateIframe = function () {
   document.getElementById("link1").href = url;
   document.getElementById("link2").href = url2;
   document.getElementById("linkRes").href = urlRes;
-};
 
+  const iframeContainer = document.getElementById("iframe-container");
+  if (
+    iframeContainer.style.display === "none" ||
+    iframeContainer.style.display === ""
+  ) {
+    iframeContainer.style.display = "flex"; // 表示する
+  }
+};
 // 初期ユニットを1つ作成
 //createUnit();
 updateQueryDisplay(); //query表示を更新
