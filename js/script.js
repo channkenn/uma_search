@@ -595,7 +595,9 @@ window.updateIframe = function () {
     alert("検索ワードが設定されていません。");
     return;
   }
-
+  if (userQuery.length === 1) {
+    userQuery = ">" + userQuery;
+  }
   const url = `https://bbs.animanch.com/search/${encodeURIComponent(
     userQuery
   )}`;
