@@ -259,18 +259,15 @@ function updateImageGrid() {
   });
 }
 // モード切り替えボタンのクリックイベント
-// モード切り替えボタンのクリックイベント
 function toggleMode() {
   isFavoritesMode = !isFavoritesMode; // モードを切り替える
   const modeText = isFavoritesMode ? "お気に入り" : "すべての画像";
   document.getElementById(
     "toggleButton"
   ).textContent = `モード切り替え: ${modeText}`;
-
-  // 現在のモードに基づいてモーダルを再描画
-  //  openModal(document.querySelector(".selected-image")); // 任意のtargetImgを再描画
 }
 document.getElementById("tohonkeButton").addEventListener("click", tohonkeMode);
+
 // モード切り替えボタンのクリックイベント
 function tohonkeMode() {
   isHonkeMode = !isHonkeMode; // モードを切り替える
@@ -278,6 +275,9 @@ function tohonkeMode() {
   document.getElementById("tohonkeButton").textContent = `${modeText}`;
   updateQueryDisplay();
 }
+// カレンダーの日付が変更された際にクエリを更新
+document.getElementById("bfday").addEventListener("input", updateQuery);
+document.getElementById("afday").addEventListener("input", updateQuery);
 function updateQuery() {
   bfday = document.getElementById("bfday").value;
   afday = document.getElementById("afday").value;
@@ -383,37 +383,9 @@ window.addEventListener("click", (event) => {
     historyModal.style.display = "none";
   }
 });
-
+// イベントリスナーを追加
+document.getElementById("toggleButton").addEventListener("click", toggleMode);
 // 初期設定でモード切り替えボタンを作成
-function createToggleButton() {
-  const toggleButton = document.createElement("button");
-  toggleButton.id = "toggleButton";
-  toggleButton.classList.add("panel-link");
-  toggleButton.textContent = "モード切り替え: すべての画像";
-  toggleButton.addEventListener("click", toggleMode);
-
-  // buttonContainerに追加
-  const buttonContainer = document.getElementById("buttonContainer");
-  buttonContainer.appendChild(toggleButton); // ボタンを追加
-}
-// 初期設定でモード切り替えボタンを作成
-function createTohonkeButton() {
-  const tohonkeButton = document.createElement("button");
-  tohonkeButton.id = "tohonkeButton";
-  tohonkeButton.classList.add("panel-link");
-  tohonkeButton.textContent = "あにまん掲示板";
-  tohonkeButton.addEventListener("click", tohonkeMode);
-
-  // buttonContainerに追加
-  const honkeContainer = document.getElementById("honkeContainer");
-  honkeContainer.appendChild(tohonkeButton); // ボタンを追加
-}
-function updateSearchInput() {
-  const selectedAlts = Array.from(document.querySelectorAll(".selected-image"))
-    .map((img) => img.alt)
-    .join(" ");
-  searchInput.value = selectedAlts;
-}
 
 // 実際にGoogle検索をする箇所
 function performGoogleSearch() {
@@ -474,12 +446,7 @@ window.addEventListener("click", (event) => {
 document.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.getElementById("searchBtn");
   searchBtn.addEventListener("click", performGoogleSearch);
-  createToggleButton(); // ボタン作成関数を呼び出し
-  createTohonkeButton(); // ボタン作成関数を呼び出し
 });
-// カレンダーの日付が変更された際にクエリを更新
-document.getElementById("bfday").addEventListener("input", updateQuery);
-document.getElementById("afday").addEventListener("input", updateQuery);
 
 function createUnitsFromQuery(query) {
   // クエリをスペース区切りで分割して配列にする
@@ -615,8 +582,11 @@ function historySet(entry) {
   }
   updateQueryDisplay();
 }
+document
+  .getElementById("animanSearchButton")
+  .addEventListener("click", updateIframe);
 // 関数をグローバルスコープに登録
-window.updateIframe = function () {
+function updateIframe() {
   if (!userQuery || userQuery.trim() === "") {
     alert("検索ワードが設定されていません。");
     return;
@@ -649,7 +619,5 @@ window.updateIframe = function () {
   ) {
     iframeContainer.style.display = "flex"; // 表示する
   }
-};
-// 初期ユニットを1つ作成
-//createUnit();
+}
 updateQueryDisplay(); //query表示を更新
