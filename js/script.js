@@ -270,6 +270,7 @@ function toggleMode() {
   // 現在のモードに基づいてモーダルを再描画
   //  openModal(document.querySelector(".selected-image")); // 任意のtargetImgを再描画
 }
+document.getElementById("tohonkeButton").addEventListener("click", tohonkeMode);
 // モード切り替えボタンのクリックイベント
 function tohonkeMode() {
   isHonkeMode = !isHonkeMode; // モードを切り替える

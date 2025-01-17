@@ -203,7 +203,6 @@ header h1 {
   align-items: center; /* 高さを中央揃え */
   gap: 10px; /* 要素間のスペース */
 }
-
 /* パネルリンクスタイル */
 .panel-link {
   display: block;
