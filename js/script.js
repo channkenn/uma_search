@@ -9,6 +9,7 @@ const modal = document.getElementById("imageModal");
 const closeModal = document.getElementById("closeModal");
 const imageGrid = document.getElementById("imageGrid");
 const searchInput = document.getElementById("searchInput");
+const perfectInput = document.getElementById("perfectInput");
 // モーダル要素
 const historyModal = document.getElementById("history-modal");
 const closehistoryModal = document.getElementById("close-modal");
@@ -31,6 +32,7 @@ let query = "";
 let selectedImages = []; // 選択された画像のaltを格納する配列
 let unitCount = 0;
 let userQuery = "";
+let userPerfectQuery = "";
 
 // ===== ヘルパー関数 =====
 // お気に入り追加
@@ -85,9 +87,9 @@ function getFavorites() {
 function updateQueryDisplay() {
   // 3つの検索ワードを組み合わせる
   if (isHonkeMode) {
-    query = `${honkeQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
+    query = `${honkeQuery} ${userQuery} ${userPerfectQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
   } else {
-    query = `${baseQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
+    query = `${baseQuery} ${userQuery} ${userPerfectQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
   } // HTML 上に表示
   queryDisplay.textContent = query;
 }
@@ -177,7 +179,13 @@ function openModal(targetImg) {
         updateImageGrid(); // モーダルを再描画
       }
     });
-
+    // ダウンロードボタン
+    const downloadButton = document.createElement("a");
+    downloadButton.textContent = "ダウンロード";
+    downloadButton.href = img.src; // 画像のURLをリンクに設定
+    downloadButton.download = fileName; // ダウンロード時のファイル名を設定
+    downloadButton.style.display = "inline-block";
+    downloadButton.style.marginLeft = "10px";
     // 画像クリック時の処理
     img.addEventListener("click", () => {
       const currentAlt = targetImg.alt;
@@ -201,6 +209,7 @@ function openModal(targetImg) {
     imgContainer.appendChild(img);
     //imgContainer.appendChild(favoriteButton);
     imgContainer.appendChild(star); // 星マークを追加
+    imgContainer.appendChild(downloadButton);
     imageGrid.appendChild(imgContainer);
   });
 
@@ -385,8 +394,6 @@ window.addEventListener("click", (event) => {
 });
 // イベントリスナーを追加
 document.getElementById("toggleButton").addEventListener("click", toggleMode);
-// 初期設定でモード切り替えボタンを作成
-
 // 実際にGoogle検索をする箇所
 function performGoogleSearch() {
   // 画像の alt 情報を取得
@@ -394,8 +401,7 @@ function performGoogleSearch() {
 
   // 3つの検索ワードを組み合わせる
   updateQueryDisplay();
-  //query = `${baseQuery} ${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
-  const historyQuery = `${userQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
+  const historyQuery = `${userQuery} ${userPerfectQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
 
   // Google 検索 URL を作成
   const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(
@@ -411,6 +417,7 @@ function performGoogleSearch() {
     query: historyQuery,
     url: googleUrl,
     userQuery: userQuery,
+    userPerfectQuery: userPerfectQuery,
     characterQuery: characterQuery,
     afday: afdayQuery,
     bfday: bfdayQuery,
@@ -433,7 +440,11 @@ searchInput.addEventListener("input", () => {
   userQuery = searchInput.value.trim();
   updateQueryDisplay();
 });
-
+// 入力フィールドの変更時にクエリを更新
+perfectInput.addEventListener("input", () => {
+  userPerfectQuery = `"${perfectInput.value}"`;
+  updateQueryDisplay();
+});
 closeModal.addEventListener("click", () => {
   modal.style.display = "none";
 });
@@ -513,7 +524,16 @@ function setInputValue(value) {
     console.error("検索欄が見つかりません");
   }
 }
-
+// 指定した文字列を入力欄にセットする関数
+function setPerfectInputValue(value) {
+  const perfectInput = document.getElementById("perfectInput");
+  if (perfectInput) {
+    perfectInput.value = value;
+    userPerfectQuery = value;
+  } else {
+    console.error("検索欄が見つかりません");
+  }
+}
 // 特定の日付を指定の date input に設定する関数
 // 特定の日付を指定の date input に設定する関数
 function setDate(inputId, dateValue) {
@@ -573,7 +593,12 @@ function historySet(entry) {
   } else {
     console.warn("userQuery が未設定:", entry.userQuery);
   }
-
+  // 使用例：ユーザーが入力したクエリを設定
+  if (entry.userPerfectQuery) {
+    setPerfectInputValue(entry.userPerfectQuery); // 入力値を設定
+  } else {
+    console.warn("userPerfectQuery が未設定:", entry.userPerfectQuery);
+  }
   // クエリ（characterQuery）を基にユニットを作成
   if (entry.characterQuery) {
     createUnitsFromQuery(entry.characterQuery); // クエリからユニットを作成
