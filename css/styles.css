@@ -340,6 +340,18 @@ a {
 a:hover {
   text-decoration: underline;
 }
+.delete-icon {
+  width: 24px; /* 必要なサイズに変更 */
+  height: 24px;
+  cursor: pointer;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
 
 /* 幅が600px以下の時 */
 @media (max-width: 600px) {

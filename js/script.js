@@ -71,11 +71,18 @@ function createUnit() {
   img.addEventListener("click", () => openModal(img)); // 画像クリックでモーダルを開く
   unit.appendChild(img);
 
-  // 削除ボタンの作成
+  // 削除アイコンの作成
+  const deleteIcon = document.createElement("img");
+  deleteIcon.src = "/img/icons/delete_icon.png";
+  deleteIcon.alt = "削除";
+  deleteIcon.className = "delete-icon"; // 必要に応じてスタイルを適用するクラス
+  deleteIcon.addEventListener("click", () => deleteUnit(unit));
+
+  // アイコンをラップするボタン（必要なら）
   const deleteButton = document.createElement("button");
   deleteButton.className = "delete-button";
-  deleteButton.textContent = "削除";
-  deleteButton.addEventListener("click", () => deleteUnit(unit));
+  deleteButton.appendChild(deleteIcon);
+
   unit.appendChild(deleteButton);
   container.appendChild(unit); // ボタンを削除したため直接ユニットを追加
 }
@@ -179,13 +186,20 @@ function openModal(targetImg) {
         updateImageGrid(); // モーダルを再描画
       }
     });
-    // ダウンロードボタン
+    // ダウンロードボタンを作成
     const downloadButton = document.createElement("a");
-    downloadButton.textContent = "ダウンロード";
     downloadButton.href = img.src; // 画像のURLをリンクに設定
     downloadButton.download = fileName; // ダウンロード時のファイル名を設定
-    downloadButton.style.display = "inline-block";
+    downloadButton.style.display = "inline-block"; // ボタンのスタイルを設定
     downloadButton.style.marginLeft = "10px";
+
+    // ダウンロード用のアイコンを作成
+    const downloadIcon = document.createElement("img");
+    downloadIcon.src = "/img/icons/download_icon.png"; // アイコン画像のパス
+    downloadIcon.alt = "ダウンロードアイコン"; // 代替テキスト
+    downloadIcon.style.width = "24px"; // アイコンのサイズを指定
+    downloadIcon.style.height = "24px"; // アイコンのサイズを指定
+    //downloadIcon.style.verticalAlign = "middle"; // テキストとアイコンの位置を揃える
     // 画像クリック時の処理
     img.addEventListener("click", () => {
       const currentAlt = targetImg.alt;
@@ -209,6 +223,8 @@ function openModal(targetImg) {
     imgContainer.appendChild(img);
     //imgContainer.appendChild(favoriteButton);
     imgContainer.appendChild(star); // 星マークを追加
+
+    downloadButton.appendChild(downloadIcon); // ボタンにアイコンを追加
     imgContainer.appendChild(downloadButton);
     imageGrid.appendChild(imgContainer);
   });
