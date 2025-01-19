@@ -73,7 +73,7 @@ function createUnit() {
 
   // 削除アイコンの作成
   const deleteIcon = document.createElement("img");
-  deleteIcon.src = "/img/icons/delete_icon.png";
+  deleteIcon.src = "img/icons/delete_icon.png";
   deleteIcon.alt = "削除";
   deleteIcon.className = "delete-icon"; // 必要に応じてスタイルを適用するクラス
   deleteIcon.addEventListener("click", () => deleteUnit(unit));
@@ -195,7 +195,7 @@ function openModal(targetImg) {
 
     // ダウンロード用のアイコンを作成
     const downloadIcon = document.createElement("img");
-    downloadIcon.src = "/img/icons/download_icon.png"; // アイコン画像のパス
+    downloadIcon.src = "img/icons/download_icon.png"; // アイコン画像のパス
     downloadIcon.alt = "ダウンロードアイコン"; // 代替テキスト
     downloadIcon.style.width = "24px"; // アイコンのサイズを指定
     downloadIcon.style.height = "24px"; // アイコンのサイズを指定
