@@ -9,7 +9,8 @@ const modal = document.getElementById("imageModal");
 const closeModal = document.getElementById("closeModal");
 const imageGrid = document.getElementById("imageGrid");
 const searchInput = document.getElementById("searchInput");
-const perfectInput = document.getElementById("perfectInput");
+const perfectInputs = document.querySelectorAll(".perfectInput");
+console.log(perfectInputs.length);
 // モーダル要素
 const historyModal = document.getElementById("history-modal");
 const closehistoryModal = document.getElementById("close-modal");
@@ -32,7 +33,7 @@ let query = "";
 let selectedImages = []; // 選択された画像のaltを格納する配列
 let unitCount = 0;
 let userQuery = "";
-let userPerfectQuery = "";
+let userPerfectQuery = []; // 配列を初期化
 
 // ===== ヘルパー関数 =====
 // お気に入り追加
@@ -94,10 +95,14 @@ function getFavorites() {
 function updateQueryDisplay() {
   // 3つの検索ワードを組み合わせる
   if (isHonkeMode) {
-    query = `${honkeQuery} ${userQuery} ${userPerfectQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
+    query = `${honkeQuery} ${userQuery} ${userPerfectQuery.join(
+      " "
+    )} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
   } else {
-    query = `${baseQuery} ${userQuery} ${userPerfectQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
-  } // HTML 上に表示
+    query = `${baseQuery} ${userQuery} ${userPerfectQuery.join(
+      " "
+    )} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
+  }
   queryDisplay.textContent = query;
 }
 // ユニットを削除する関数
@@ -456,10 +461,13 @@ searchInput.addEventListener("input", () => {
   userQuery = searchInput.value.trim();
   updateQueryDisplay();
 });
-// 入力フィールドの変更時にクエリを更新
-perfectInput.addEventListener("input", () => {
-  userPerfectQuery = `"${perfectInput.value}"`;
-  updateQueryDisplay();
+// 各入力フィールドにリスナーを追加
+perfectInputs.forEach((input, index) => {
+  input.addEventListener("input", () => {
+    console.log("Input changed:", input.value);
+    userPerfectQuery[index] = `"${input.value}"`; // 配列の特定インデックスを更新
+    updateQueryDisplay();
+  });
 });
 closeModal.addEventListener("click", () => {
   modal.style.display = "none";
@@ -540,16 +548,26 @@ function setInputValue(value) {
     console.error("検索欄が見つかりません");
   }
 }
-// 指定した文字列を入力欄にセットする関数
-function setPerfectInputValue(value) {
-  const perfectInput = document.getElementById("perfectInput");
-  if (perfectInput) {
-    perfectInput.value = value;
-    userPerfectQuery = value;
+// 指定した文字列の配列をすべての入力欄にセットする関数
+function setPerfectInputValues(values) {
+  const perfectInputs = document.querySelectorAll(".perfectInput"); // class属性で取得
+  if (perfectInputs.length > 0) {
+    userPerfectQuery = []; // userPerfectQueryを初期化
+    perfectInputs.forEach((input, index) => {
+      if (index < values.length) {
+        input.value = values[index]; // 配列内の対応する値をセット
+        userPerfectQuery.push(values[index]); // 配列に値を保存
+      } else {
+        input.value = ""; // 値が不足している場合は空文字をセット
+        userPerfectQuery.push(""); // 空文字も保存
+      }
+    });
+    console.log("値が設定されました:", userPerfectQuery);
   } else {
     console.error("検索欄が見つかりません");
   }
 }
+
 // 特定の日付を指定の date input に設定する関数
 // 特定の日付を指定の date input に設定する関数
 function setDate(inputId, dateValue) {
@@ -611,7 +629,7 @@ function historySet(entry) {
   }
   // 使用例：ユーザーが入力したクエリを設定
   if (entry.userPerfectQuery) {
-    setPerfectInputValue(entry.userPerfectQuery); // 入力値を設定
+    setPerfectInputValues(entry.userPerfectQuery); // 入力値を設定
   } else {
     console.warn("userPerfectQuery が未設定:", entry.userPerfectQuery);
   }
