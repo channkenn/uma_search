@@ -18,7 +18,7 @@ export const imageList = [
   { fileName: "エアシャカール.png", altText: "(シャカール OR シャカ OR エアシャカール)" },
   { fileName: "エアメサイア.png", altText: "(メサイア OR エアメサイア)" },
   { fileName: "エイシンフラッシュ.png", altText: "(フラッシュ OR エイシンフラッシュ)" },
-  { fileName: "エスポワールシチー.png", altText: "(エスポワールシチー)" },
+  { fileName: "エスポワールシチー.png", altText: "(エスポ OR エスポワールシチー)" },
   { fileName: "エルコンドルパサー.png", altText: "(エル OR エルコンドルパサー)" },
   { fileName: "オグリキャップ.png", altText: "(オグリ OR オグリキャップ)" },
   { fileName: "オルフェーヴル.png", altText: "(オル OR オルフェ OR オルフェーヴル)" },
