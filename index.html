@@ -2,43 +2,58 @@
 <html lang="ja">
   <head>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EG5D7Q6BWP"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-EG5D7Q6BWP"
+    ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-      gtag('config', 'G-EG5D7Q6BWP');
+      gtag("config", "G-EG5D7Q6BWP");
     </script>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <!-- Twitterカードの種類を指定 -->
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary_large_image" />
     <!-- Open Graph用の画像 -->
-    <meta property="og:image" content="https://channkenn.github.io/uma_search/img/icons/uma_search_icon.png">
+    <meta
+      property="og:image"
+      content="https://channkenn.github.io/uma_search/img/icons/uma_search_icon.png"
+    />
     <!-- Twitterカード用の画像 -->
-    <meta name="twitter:image" content="https://channkenn.github.io/uma_search/img/icons/uma_search_icon.png">
+    <meta
+      name="twitter:image"
+      content="https://channkenn.github.io/uma_search/img/icons/uma_search_icon.png"
+    />
     <!-- Open Graph用のタイトル -->
-    <meta property="og:title" content="あにまん掲示板ウマカテ検索">
+    <meta property="og:title" content="あにまん掲示板ウマカテ検索" />
     <!-- Twitterカード用のタイトル -->
-    <meta name="twitter:title" content="あにまん掲示板ウマカテ検索">
+    <meta name="twitter:title" content="あにまん掲示板ウマカテ検索" />
     <!-- Open Graph用の説明 -->
-    <meta property="og:description" content="あにまん掲示板ウマカテ検索できるようにします">
+    <meta
+      property="og:description"
+      content="あにまん掲示板ウマカテ検索できるようにします"
+    />
     <!-- Twitterカード用の説明 -->
-    <meta name="twitter:description" content="あにまん掲示板ウマカテ検索できるようにします">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer">
-    <link rel="icon" href="img/icons/uma_search_favicon.png" type="image/png">
+    <meta
+      name="twitter:description"
+      content="あにまん掲示板ウマカテ検索できるようにします"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="icon" href="img/icons/uma_search_favicon.png" type="image/png" />
     <title>あにまん掲示板ウマカテ検索</title>
-    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
     <!-- ヘッダー -->
     <header>
       <img src="img/icons/uma_search_icon3.png" alt="サムネイル画像" />
       <a href="/">
-        <h1 class="header-title">
-          あにまん掲示板&nbsp;ウマカテ検索
-        </h1>
+        <h1 class="header-title">あにまん掲示板&nbsp;ウマカテ検索</h1>
       </a>
     </header>
     <div id="unit-container"></div>
@@ -47,29 +62,30 @@
     </div>
     <div class="container-inline">
       <button id="add-unit-btn" class="panel-link">キャラ追加</button>
-      <button id="toggleButton" class="panel-link">モード切り替え: すべての画像</button>
+      <button id="toggleButton" class="panel-link">
+        モード切り替え: すべての画像
+      </button>
     </div>
-    
+
     <!-- Google検索 -->
     <div id="search-container">
       <div class="search_day">
         <div class="inputs-inline">
           <div class="search_afday">
-            <input type="date" id="afday">
+            <input type="date" id="afday" />
             <label for="afday"><strong>から</strong></label>
           </div>
           <div class="search_bfday">
-            <input type="date" id="bfday">
+            <input type="date" id="bfday" />
             <label for="bfday"><strong>まで</strong></label>
           </div>
         </div>
         <input type="text" id="searchInput" placeholder="検索ワードを入力" />
-        <input type="text" class="perfectInput " placeholder="完全一致1" />
+        <input type="text" class="perfectInput" placeholder="完全一致1" />
         <input type="text" class="perfectInput" placeholder="完全一致2" />
         <input type="text" class="perfectInput" placeholder="完全一致3" />
-
       </div>
-      
+
       <div class="buttons-inline">
         <button id="tohonkeButton" class="panel-link">あにまん掲示板</button>
         <div class="panel-link">
@@ -94,8 +110,53 @@
           <iframe id="searchIframeRes"></iframe>
         </div>
       </div>
-    <a href="https://linguistic-sherilyn-animanimage-50068fef.koyeb.app/" class="panel-link" target="_blank">あにまん掲示板お気に入り画像とスレッド</a>
-    <a href="https://bbs.animanch.com/board/4355703/" class="panel-link" target="_blank">ウマカテ検索：元スレ</a>
+    </div>
+    <div>
+      <div class="horizontal-layout">
+        <button id="export-favorite-character" class="panel-link">
+          お気に入りエクスポート(CSV)
+        </button>
+        <label for="import-favorite-character" class="panel-link">
+          お気に入りインポート(CSV)
+        </label>
+        <input
+          type="file"
+          id="import-favorite-character"
+          style="display: none"
+          accept=".csv"
+        />
+      </div>
+    </div>
+
+    <div>
+      <div class="horizontal-layout">
+        <button id="export-search-history" class="panel-link">
+          履歴エクスポート(CSV)
+        </button>
+        <label for="import-search-history" class="panel-link">
+          履歴インポート(CSV)
+        </label>
+        <input
+          type="file"
+          id="import-search-history"
+          style="display: none"
+          accept=".csv"
+        />
+      </div>
+    </div>
+
+    <a
+      href="https://linguistic-sherilyn-animanimage-50068fef.koyeb.app/"
+      class="panel-link"
+      target="_blank"
+      >あにまん掲示板お気に入り画像とスレッド</a
+    >
+    <a
+      href="https://bbs.animanch.com/board/4355703/"
+      class="panel-link"
+      target="_blank"
+      >ウマカテ検索：元スレ</a
+    >
     <!-- モーダル -->
     <div id="imageModal" class="modal">
       <div class="modal-content">
@@ -104,16 +165,15 @@
       </div>
     </div>
 
-
-<!-- 履歴モーダル -->
-<div id="history-modal" class="history-modal">
-  <div class="history-modal-content">
-    <span class="close" id="close-modal">&times;</span>
-    <h2>検索履歴</h2>
-    <button id="clear-all-btn" class="clear-all-btn">すべて削除</button>
-    <ul id="history-list" class="history-list"></ul>
-  </div>
-</div>
+    <!-- 履歴モーダル -->
+    <div id="history-modal" class="history-modal">
+      <div class="history-modal-content">
+        <span class="close" id="close-modal">&times;</span>
+        <h2>検索履歴</h2>
+        <button id="clear-all-btn" class="clear-all-btn">すべて削除</button>
+        <ul id="history-list" class="history-list"></ul>
+      </div>
+    </div>
     <!-- 画像データの読み込み -->
     <script type="module" src="js/script.js"></script>
   </body>

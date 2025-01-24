@@ -374,7 +374,11 @@ a:hover {
   border-radius: 5px;
   background-color: #f9f9f9;
 }
-
+.horizontal-layout {
+  display: flex;
+  gap: 10px; /* ボタンとラベルの間に余白を設定 */
+  align-items: center; /* 縦方向を中央揃えに */
+}
 /* 幅が600px以下の時 */
 @media (max-width: 600px) {
   .iframe-container {

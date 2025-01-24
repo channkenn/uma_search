@@ -679,4 +679,165 @@ function updateIframe() {
     iframeContainer.style.display = "flex"; // 表示する
   }
 }
+// CSV生成用の関数
+// CSV生成用の関数
+function createCSV(data, headers) {
+  const csvRows = [headers.join(",")];
+  data.forEach((item) => {
+    const row = headers.map((header) => {
+      let value = item[header];
+      if (Array.isArray(value)) {
+        value = value.join(","); // 配列はカンマで結合
+      }
+      if (value === null || value === undefined) {
+        value = ""; // null や undefined を空文字列に置き換える
+      }
+      return `"${String(value).replace(/"/g, '""')}"`; // ダブルクォート対応
+    });
+    csvRows.push(row.join(","));
+  });
+  return csvRows.join("\n");
+}
+
+// ダウンロード処理
+function downloadCSV(filename, content) {
+  const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// Favorite Character: エクスポート
+document
+  .getElementById("export-favorite-character")
+  .addEventListener("click", () => {
+    const data = JSON.parse(localStorage.getItem("favoriteCharacter") || "[]");
+    if (data.length === 0) {
+      alert("favoriteCharacter にデータがありません。");
+      return;
+    }
+    const headers = ["fileName", "altText"];
+    const csv = createCSV(data, headers);
+    downloadCSV("favoriteCharacter.csv", csv);
+  });
+
+// Search History: エクスポート
+document
+  .getElementById("export-search-history")
+  .addEventListener("click", () => {
+    const data = JSON.parse(localStorage.getItem("searchHistory") || "[]");
+    if (data.length === 0) {
+      alert("searchHistory にデータがありません。");
+      return;
+    }
+    const headers = [
+      "date",
+      "query",
+      "url",
+      "userQuery",
+      "userPerfectQuery",
+      "characterQuery",
+      "afday",
+      "bfday",
+    ];
+    const csv = createCSV(data, headers);
+    downloadCSV("searchHistory.csv", csv);
+  });
+
+// CSV読み込み用の共通関数
+function parseCSV(content) {
+  const rows = content.split("\n");
+  const headers = rows
+    .shift()
+    .split(",")
+    .map((header) => header.trim());
+  return rows
+    .filter((row) => row.trim() !== "")
+    .map((row) => {
+      const values = row.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g) || [];
+      const entry = {};
+      headers.forEach((header, i) => {
+        entry[header] = values[i] ? values[i].replace(/(^"|"$)/g, "") : "";
+      });
+      return entry;
+    });
+}
+
+// 配列から重複を排除する関数（keyに基づいて）
+function mergeUniqueData(existingData, newData, key) {
+  const existingKeys = new Set(existingData.map((item) => item[key]));
+  return [
+    ...existingData,
+    ...newData.filter((item) => !existingKeys.has(item[key])),
+  ];
+}
+
+// Favorite Character: インポート
+document
+  .getElementById("import-favorite-character")
+  .addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const content = e.target.result;
+      const newData = parseCSV(content);
+
+      // 既存のデータを取得
+      const existingData = JSON.parse(
+        localStorage.getItem("favoriteCharacter") || "[]"
+      );
+
+      // 重複を排除してデータをマージ
+      const mergedData = mergeUniqueData(existingData, newData, "fileName");
+
+      // ローカルストレージに保存
+      localStorage.setItem("favoriteCharacter", JSON.stringify(mergedData));
+      alert("favoriteCharacter にデータをインポートしました！");
+    };
+    reader.readAsText(file);
+  });
+
+// Search History: インポート
+document
+  .getElementById("import-search-history")
+  .addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const content = e.target.result;
+      const newData = parseCSV(content);
+
+      // 既存のデータを取得
+      const existingData = JSON.parse(
+        localStorage.getItem("searchHistory") || "[]"
+      );
+
+      // 重複を排除してデータをマージ (ここでは "date" と "query" をキーとして扱う)
+      const mergedData = [
+        ...existingData,
+        ...newData.filter(
+          (newItem) =>
+            !existingData.some(
+              (existingItem) =>
+                existingItem.date === newItem.date &&
+                existingItem.query === newItem.query
+            )
+        ),
+      ];
+
+      // ローカルストレージに保存
+      localStorage.setItem("searchHistory", JSON.stringify(mergedData));
+      alert("searchHistory にデータをインポートしました！");
+    };
+    reader.readAsText(file);
+  });
+
 updateQueryDisplay(); //query表示を更新
