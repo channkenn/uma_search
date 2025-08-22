@@ -5,6 +5,7 @@ export const imageList = [
   { fileName: "アグネスタキオン.png", altText: "(タキオン OR アグネスタキオン)" },
   { fileName: "アグネスデジタル.png", altText: "(デジタル OR デジ OR アグネスデジタル)" },
   { fileName: "アストンマーチャン.png", altText: "(マーチャン OR アストンマーチャン)" },
+  { fileName: "アドマイヤグルーヴ.png", altText: "(アドマイヤグルーヴ)" },
   { fileName: "アドマイヤベガ.png", altText: "(アヤベ OR アドべ OR アドマイヤベガ)" },
   { fileName: "アーモンドアイ.png", altText: "(アーモンドアイ)" },
   { fileName: "イクノディクタス.png", altText: "(イクノ OR イクノディクタス)" },
