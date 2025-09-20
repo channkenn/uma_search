@@ -77,13 +77,16 @@ header h1 {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+/* モーダルの基本サイズ */
 .modal-content {
   background-color: white;
   margin: 15% auto;
   padding: 20px;
-  width: 80%;
-  max-height: 80%; /* 最大高さを設定 */
-  overflow: hidden; /* コンテンツがはみ出さないように */
+  width: 100%; /* 横幅50% */
+  max-width: 1080px; /* 最大幅 */
+  max-height: 50%; /* 高さ50% */
+  overflow: auto; /* はみ出た場合はスクロール */
+  border-radius: 8px;
 }
 
 .close {
@@ -100,10 +103,12 @@ header h1 {
   overflow-y: auto; /* 縦方向にスクロール */
 }
 
+/* モーダル内の画像サイズを100x100に固定 */
 #imageGrid img {
-  width: 100%;
-  height: auto;
-  cursor: pointer;
+  width: 100px; /* 幅を100pxに固定 */
+  height: 100px; /* 高さを100pxに固定 */
+  object-fit: cover; /* 枠いっぱいに収める（縦横比を保持） */
+  cursor: pointer; /* クリック可能を示す */
 }
 
 /* モーダル全体のスタイル */
@@ -381,6 +386,20 @@ a:hover {
 }
 /* 幅が600px以下の時 */
 @media (max-width: 600px) {
+  .modal-content {
+    width: 90%; /* 横幅を画面幅の90%に */
+    max-width: 90%; /* 最大幅も画面幅に合わせる */
+    max-height: 70%; /* 高さは画面の70%に */
+    margin: 10% auto; /* 上下マージンを少し減らす */
+  }
+  #imageGrid {
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  }
+  #imageGrid img {
+    width: 70px; /* 幅を小さく */
+    height: 70px; /* 高さも小さく */
+  }
+
   .iframe-container {
     flex-direction: column; /* 縦並びに変更 */
     gap: 10px; /* 要素間の間隔を保持 */

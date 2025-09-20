@@ -67,7 +67,7 @@ function createUnit() {
   // 画像の作成
   const img = document.createElement("img");
   img.className = "selected-image";
-  img.src = `${imagePath}モブウマ娘.png`; // 初期画像
+  img.src = `${imagePath}モブウマ娘_70.webp`; // 初期画像
   img.alt = ""; // 初期alt
   img.addEventListener("click", () => openModal(img)); // 画像クリックでモーダルを開く
   unit.appendChild(img);
