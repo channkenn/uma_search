@@ -139,6 +139,7 @@ export const imageList = [
   { fileName: "ラヴズオンリーユー_70.webp", altText: "(ラヴズオンリーユー)" },
   { fileName: "リガントーナ_70.webp", altText: "(リガントーナ)" },
   { fileName: "リトルココン_70.webp", altText: "(リトルココン)" },
+  { fileName: "レッドディザイア_70.webp", altText: "(レッドディザイア OR ディザイア OR デザイア)" },
   { fileName: "ロイスアンドロイス_70.webp", altText: "(ロイス OR ロイスアンドロイス)" },
   { fileName: "ワンダーアキュート_70.webp", altText: "(アキュート OR ワンダーアキュート)" },
   { fileName: "ゴドルフィンバルブ_70.webp", altText: "(ゴドルフィンバルブ)" },
