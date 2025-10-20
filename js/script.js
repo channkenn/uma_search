@@ -212,7 +212,9 @@ function openModal(targetImg) {
         selectedImages = selectedImages.filter((alt) => alt !== currentAlt);
       }
 
-      targetImg.src = img.src;
+      // モーダル用ファイル名を表示用に戻す
+      const displayFileName = fileName.replace("_70.webp", "_200.webp");
+      targetImg.src = `${imagePath}${displayFileName}`;
       targetImg.alt = img.alt;
 
       if (!selectedImages.includes(img.alt)) {
@@ -245,7 +247,9 @@ function updateImageGrid() {
 
   displayList.forEach(({ fileName, altText }) => {
     const img = document.createElement("img");
-    img.src = `${imagePath}${fileName}`;
+    // 修正後（モーダル用）
+    const modalFileName = fileName.replace("_200.webp", "_70.webp");
+    img.src = `${imagePath}${modalFileName}`;
     img.alt = altText;
 
     if (selectedImages.includes(altText)) {

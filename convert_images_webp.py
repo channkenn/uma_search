@@ -9,7 +9,7 @@ os.makedirs(output_dir, exist_ok=True)
 # リサイズ設定（用途ごと）
 sizes = {
     "icon": 70,   # 一覧・結果表示
-    "select": 100 # 選択中キャラ
+    "select": 200 # 選択中キャラ
 }
 
 for filename in os.listdir(input_dir):
