@@ -29,6 +29,7 @@ export const imageList = [
   { fileName: "カレンチャン_70.webp", altText: "(カレン OR カレンチャン)" },
   { fileName: "カレンブーケドール_70.webp", altText: "(カレンブーケドール)" },
   { fileName: "カワカミプリンセス_70.webp", altText: "(カワカミ OR プリンセス OR カワカミプリンセス)" },
+  { fileName: "キセキ_70.webp", altText: "(キセキ)" },
   { fileName: "キタサンブラック_70.webp", altText: "(キタサン OR キタサンブラック)" },
   { fileName: "キングヘイロー_70.webp", altText: "(キング OR キングヘイロー)" },
   { fileName: "クロノジェネシス_70.webp", altText: "(クロノジェネシス)" },
