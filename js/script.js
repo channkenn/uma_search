@@ -96,11 +96,11 @@ function updateQueryDisplay() {
   // 3つの検索ワードを組み合わせる
   if (isHonkeMode) {
     query = `${honkeQuery} ${userQuery} ${userPerfectQuery.join(
-      " "
+      " ",
     )} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
   } else {
     query = `${baseQuery} ${userQuery} ${userPerfectQuery.join(
-      " "
+      " ",
     )} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
   }
   queryDisplay.textContent = query;
@@ -296,9 +296,8 @@ function updateImageGrid() {
 function toggleMode() {
   isFavoritesMode = !isFavoritesMode; // モードを切り替える
   const modeText = isFavoritesMode ? "お気に入り" : "すべての画像";
-  document.getElementById(
-    "toggleButton"
-  ).textContent = `モード切り替え: ${modeText}`;
+  document.getElementById("toggleButton").textContent =
+    `モード切り替え: ${modeText}`;
 }
 document.getElementById("tohonkeButton").addEventListener("click", tohonkeMode);
 
@@ -430,7 +429,7 @@ function performGoogleSearch() {
 
   // Google 検索 URL を作成
   const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(
-    query
+    query,
   )}`;
   // 現在の日時を取得
   const currentDate = new Date().toLocaleString();
@@ -649,7 +648,8 @@ document
   .getElementById("animanSearchButton")
   .addEventListener("click", updateIframe);
 // 関数をグローバルスコープに登録
-function updateIframe() {
+// 関数をグローバルスコープに登録（asyncを追加して非同期対応にします）
+async function updateIframe() {
   if (!userQuery || userQuery.trim() === "") {
     alert("検索ワードが設定されていません。");
     return;
@@ -657,31 +657,39 @@ function updateIframe() {
   if (userQuery.length === 1) {
     userQuery = ">" + userQuery;
   }
-  const url = `https://bbs.animanch.com/search/${encodeURIComponent(
-    userQuery
-  )}`;
-  const url2 = `https://bbs.animanch.com/search2/${encodeURIComponent(
-    userQuery
-  )}`;
-  const urlRes = `https://bbs.animanch.com/searchRes/${encodeURIComponent(
-    userQuery
-  )}`;
 
-  document.getElementById("searchIframe").src = url;
-  document.getElementById("searchIframe2").src = url2;
-  document.getElementById("searchIframeRes").src = urlRes;
-  // <a>タグにもURLを設定
-  document.getElementById("link1").href = url;
-  document.getElementById("link2").href = url2;
-  document.getElementById("linkRes").href = urlRes;
+  const url = `https://bbs.animanch.com/search/${encodeURIComponent(userQuery)}`;
+  const url2 = `https://bbs.animanch.com/search2/${encodeURIComponent(userQuery)}`;
+  const urlRes = `https://bbs.animanch.com/searchRes/${encodeURIComponent(userQuery)}`;
 
+  // コンテナを表示状態にする（中身をロードする前に枠を見せる）
   const iframeContainer = document.getElementById("iframe-container");
   if (
     iframeContainer.style.display === "none" ||
     iframeContainer.style.display === ""
   ) {
-    iframeContainer.style.display = "flex"; // 表示する
+    iframeContainer.style.display = "flex";
   }
+
+  // --- ここから時間差ロードの実装 ---
+
+  // 1. 現行スレをロード
+  document.getElementById("searchIframe").src = url;
+  document.getElementById("link1").href = url;
+
+  // 1.5秒待機（サーバーの負荷制限を回避）
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+
+  // 2. 過去スレをロード
+  document.getElementById("searchIframe2").src = url2;
+  document.getElementById("link2").href = url2;
+
+  // さらに1.5秒待機
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+
+  // 3. レス検索をロード
+  document.getElementById("searchIframeRes").src = urlRes;
+  document.getElementById("linkRes").href = urlRes;
 }
 // CSV生成用の関数
 // CSV生成用の関数
@@ -794,7 +802,7 @@ document
 
       // 既存のデータを取得
       const existingData = JSON.parse(
-        localStorage.getItem("favoriteCharacter") || "[]"
+        localStorage.getItem("favoriteCharacter") || "[]",
       );
 
       // 重複を排除してデータをマージ
@@ -821,7 +829,7 @@ document
 
       // 既存のデータを取得
       const existingData = JSON.parse(
-        localStorage.getItem("searchHistory") || "[]"
+        localStorage.getItem("searchHistory") || "[]",
       );
 
       // 重複を排除してデータをマージ (ここでは "date" と "query" をキーとして扱う)
@@ -832,8 +840,8 @@ document
             !existingData.some(
               (existingItem) =>
                 existingItem.date === newItem.date &&
-                existingItem.query === newItem.query
-            )
+                existingItem.query === newItem.query,
+            ),
         ),
       ];
 
