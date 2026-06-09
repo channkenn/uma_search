@@ -158,6 +158,7 @@ export const imageList = [
   { fileName: "ソノンエルフィー_70.webp", altText: "(エルフィー OR ソノンエルフィー)" },
   { fileName: "ライトハロー_70.webp", altText: "(ハロー OR ライトハロー)" },
   { fileName: "タッカーブライン_70.webp", altText: "(タッカー OR ブライン OR タッカーブライン)" },
+  { fileName: "カジノドライヴ_70.webp", altText: "(カジノ OR ドライヴ OR カジノドライヴ)" },
   { fileName: "乙名史悦子_70.webp", altText: "(悦子 OR 乙名史 OR 乙名史悦子)" },
   { fileName: "佐岳メイ_70.webp", altText: "(佐岳 OR メイ OR 佐岳メイ)" },
   { fileName: "安心沢刺々美_70.webp", altText: "(安心沢 OR 不審者 OR 安心沢刺々美)" },
