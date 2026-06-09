@@ -227,6 +227,7 @@ function openModal(targetImg) {
     });
 
     const imgContainer = document.createElement("div");
+    imgContainer.setAttribute("data-alt", img.alt); // ここを追加
     imgContainer.appendChild(img);
     //imgContainer.appendChild(favoriteButton);
     imgContainer.appendChild(star); // 星マークを追加
@@ -287,6 +288,7 @@ function updateImageGrid() {
     });
 
     const imgContainer = document.createElement("div");
+    imgContainer.setAttribute("data-alt", img.alt); // ここを追加
     imgContainer.appendChild(img);
     imgContainer.appendChild(star);
     imageGrid.appendChild(imgContainer);
