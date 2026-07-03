@@ -17,10 +17,11 @@ const closehistoryModal = document.getElementById("close-modal");
 const historyList = document.getElementById("history-list");
 const historyButton = document.getElementById("history-button");
 // 検索クエリを表示する要素
-const queryDisplay = document.getElementById("query-display");
+const queryDisplay = document.getElementById("query-display") || {};
 // ベース検索クエリ
 const baseQuery = `site:bbs.animanch.com/ "カテゴリ『ウマ娘・競馬』"`;
 const honkeQuery = `site:animanch.com -site:bbs.animanch.com "ウマ娘"`;
+const boardQuery = `site:bbs.animanch.com/board/`;
 // 状態管理
 let afday = "";
 let afdayQuery = ""; // グローバルに宣言したdateQuery
@@ -93,16 +94,10 @@ function getFavorites() {
   return JSON.parse(localStorage.getItem("favoriteCharacter")) || [];
 }
 function updateQueryDisplay() {
-  // 3つの検索ワードを組み合わせる
-  if (isHonkeMode) {
-    query = `${honkeQuery} ${userQuery} ${userPerfectQuery.join(
-      " ",
-    )} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
-  } else {
-    query = `${baseQuery} ${userQuery} ${userPerfectQuery.join(
-      " ",
-    )} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
-  }
+  // queryDisplayが存在しない、またはtextContentを持っていない場合は何もしない
+  if (!queryDisplay || !queryDisplay.textContent) return;
+
+  query = `${baseQuery} ${userQuery} ${userPerfectQuery.join(" ")} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
   queryDisplay.textContent = query;
 }
 // ユニットを削除する関数
@@ -301,7 +296,7 @@ function toggleMode() {
   document.getElementById("toggleButton").textContent =
     `モード切り替え: ${modeText}`;
 }
-document.getElementById("tohonkeButton").addEventListener("click", tohonkeMode);
+//document.getElementById("tohonkeButton").addEventListener("click", tohonkeMode);
 
 // モード切り替えボタンのクリックイベント
 function tohonkeMode() {
@@ -419,20 +414,27 @@ window.addEventListener("click", (event) => {
   }
 });
 // イベントリスナーを追加
-document.getElementById("toggleButton").addEventListener("click", toggleMode);
+//document.getElementById("toggleButton").addEventListener("click", toggleMode);
 // 実際にGoogle検索をする箇所
-function performGoogleSearch() {
-  // 画像の alt 情報を取得
-  const selectedImg = document.querySelector(".selected-image");
+// 実際にGoogle検索をする箇所
+function performGoogleSearch(mode = "bbs") {
+  // モードに応じてベースクエリを切り替え
+  let selectedBaseQuery = baseQuery;
+  if (mode === "honke") {
+    selectedBaseQuery = honkeQuery;
+  } else if (mode === "board") {
+    selectedBaseQuery = boardQuery; // 追加
+  }
 
-  // 3つの検索ワードを組み合わせる
-  updateQueryDisplay();
-  const historyQuery = `${userQuery} ${userPerfectQuery} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
+  // フルクエリの組み立て
+  const fullQuery = `${selectedBaseQuery} ${userQuery} ${userPerfectQuery.join(" ")} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
+
+  // 履歴表示用のクエリ（ベースクエリを除いたもの）
+  const historyQuery = `${userQuery} ${userPerfectQuery.join(" ")} ${characterQuery} ${afdayQuery} ${bfdayQuery}`;
 
   // Google 検索 URL を作成
-  const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(
-    query,
-  )}`;
+  const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(fullQuery)}`;
+
   // 現在の日時を取得
   const currentDate = new Date().toLocaleString();
 
@@ -449,6 +451,7 @@ function performGoogleSearch() {
     bfday: bfdayQuery,
   });
   localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+
   // 新しいタブで検索結果を開く
   window.open(googleUrl, "_blank");
 }
@@ -485,7 +488,13 @@ window.addEventListener("click", (event) => {
 });
 document.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.getElementById("searchBtn");
-  searchBtn.addEventListener("click", performGoogleSearch);
+  const searchHonkeBtn = document.getElementById("searchHonkeBtn");
+  const searchBoardBtn = document.getElementById("searchBoardBtn"); // 追加
+
+  // 各ボタンのイベント
+  searchBtn.addEventListener("click", () => performGoogleSearch("bbs"));
+  searchHonkeBtn.addEventListener("click", () => performGoogleSearch("honke"));
+  searchBoardBtn.addEventListener("click", () => performGoogleSearch("board")); // 追加
 });
 
 function createUnitsFromQuery(query) {
